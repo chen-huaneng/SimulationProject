@@ -44,7 +44,6 @@ END_MESSAGE_MAP()
 
 // Coin 消息处理程序
 
-
 void Coin::OnBnClickedButton1()
 {
     UpdateData(TRUE); // 从界面控件获取数据
