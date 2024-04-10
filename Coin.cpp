@@ -25,6 +25,15 @@ Coin::~Coin()
 {
 }
 
+BOOL Coin::OnInitDialog() {
+    CDialog::OnInitDialog();
+
+    // 设置对话框标题
+    SetWindowText(_T("Coin Flipping Game"));
+
+    return TRUE;  
+}
+
 void Coin::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);

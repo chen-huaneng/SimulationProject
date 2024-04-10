@@ -32,6 +32,8 @@ public:
     CString m_rewardVolume;
     CString m_experimentVolume;
 
+    virtual BOOL OnInitDialog() override;
+
     // 按钮事件处理函数
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();

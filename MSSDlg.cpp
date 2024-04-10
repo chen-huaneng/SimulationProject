@@ -107,7 +107,7 @@ BOOL CMSSDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
-	SetWindowText(_T("陈华能 17420212200999  张正贤 174202122"));
+	SetWindowText(_T("陈华能 17420212200999  张正贤 17420212201039"));
 	SetButtonText();
 
 
