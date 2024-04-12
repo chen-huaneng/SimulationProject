@@ -108,8 +108,6 @@ BOOL CMSSDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 
 	SetWindowText(_T("陈华能 17420212200999  张正贤 17420212201039"));
-	SetButtonText();
-
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
