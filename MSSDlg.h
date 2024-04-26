@@ -38,4 +38,5 @@ public:
 	CButton Queue_Button;
 	void SetButtonText();
 	CButton Inventory;
+	afx_msg void OnBnClickedButton2();
 };

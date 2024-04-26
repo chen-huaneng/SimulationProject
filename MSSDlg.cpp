@@ -8,6 +8,7 @@
 #include "MSSDlg.h"
 #include "afxdialogex.h"
 #include "Coin.h"
+#include "Queue.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -71,6 +72,7 @@ BEGIN_MESSAGE_MAP(CMSSDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CMSSDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON3, &CMSSDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON2, &CMSSDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -205,4 +207,15 @@ void CMSSDlg::OnBnClickedButton1() {
 
 void CMSSDlg::OnBnClickedButton3() {
 	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CMSSDlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	Queue q;
+	if (q.DoModal() == IDOK) {
+		// 设置对话框的文本
+		q.SetWindowText(_T("Queue"));
+	}
 }
