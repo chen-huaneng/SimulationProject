@@ -25,4 +25,7 @@ public:
 	afx_msg void OnLvnItemchangedList1(NMHDR* pNMHDR, LRESULT* pResult);
 	CListCtrl list;
 	virtual BOOL OnInitDialog();
+	CButton radio1;
+	afx_msg void OnBnClickedButton6();
+	void ClearControls(CDialogEx* pParentDlg);
 };
