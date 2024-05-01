@@ -185,6 +185,8 @@
   <ItemGroup>
     <ClInclude Include="Coin.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="lcgrand.h" />
+    <ClInclude Include="mm1.h" />
     <ClInclude Include="MSS.h" />
     <ClInclude Include="MSSDlg.h" />
     <ClInclude Include="pch.h" />
@@ -194,6 +196,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="lcgrand.cpp" />
+    <ClCompile Include="mm1.cpp" />
     <ClCompile Include="MSS.cpp" />
     <ClCompile Include="MSSDlg.cpp" />
     <ClCompile Include="pch.cpp">

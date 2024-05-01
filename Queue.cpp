@@ -12,7 +12,7 @@
 IMPLEMENT_DYNAMIC(Queue, CDialogEx)
 
 Queue::Queue(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_DIALOG2, pParent)
+	: CDialogEx(IDD_DIALOG2, pParent), m_nSelectRadio(IDC_RADIO1) //默认选中第一个单选按钮
 {
 
 }
@@ -54,17 +54,8 @@ BOOL Queue::OnInitDialog()
 	// 更改窗口标题
 	SetWindowText(_T("Simulation of a Single-Server Queueing System"));
 
-	// 初始化
-	list.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 50);
-	list.InsertColumn(1, _T("Name"), LVCFMT_LEFT, 100);
-	list.InsertColumn(2, _T("Time"), LVCFMT_LEFT, 100);
-	list.InsertColumn(3, _T("Type"), LVCFMT_LEFT, 100);
-	list.InsertColumn(4, _T("Status"), LVCFMT_LEFT, 100);
-	list.InsertColumn(5, _T("Window"), LVCFMT_LEFT, 100);
-	list.InsertItem(0, _T("1"));
-	list.SetItemText(0, 1, _T("2"));
-	list.InsertItem(1, _T("2"));
-	list.SetItemText(1, 1, _T("3"));
+	// 初始化列表控件
+	InitListControls(this->list);
 
 	// 设置默认选中第一个单选按钮
 	((CButton*)GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
@@ -96,6 +87,27 @@ void Queue::OnBnClickedButton6()
     // 判断哪一个单选按钮是选中的
     if (radio1State == BST_CHECKED)
     {
+		CString mean_interarrival;
+		GetDlgItemText(IDC_EDIT1, mean_interarrival);
+		CString mean_service;
+		GetDlgItemText(IDC_EDIT2, mean_service);
+		CString num_delays_required;
+		GetDlgItemText(IDC_EDIT3, num_delays_required);
+		CString replication;
+		GetDlgItemText(IDC_EDIT6, replication);
+		int replication_int = _ttoi(replication);
+		float mean_interarrival_float = _ttof(mean_interarrival);
+		float mean_service_float = _ttof(mean_service);
+		int num_delays_required_float = _ttoi(num_delays_required);
+
+		//printf("mean_interarrival: %f\n", mean_interarrival_float);
+		//printf("mean_service: %f\n", mean_service_float);
+		//printf("num_delays_required: %d\n", num_delays_required_float);
+		//printf("replication: %d\n", replication_int);
+		
+		vector<float> results = mm1(mean_interarrival_float, mean_service_float, num_delays_required_float);
+		results.insert(results.begin(), replication_int);
+		ShowResultsInListCtrl(list, results);
 
     }
     else if (radio2State == BST_CHECKED)
@@ -118,4 +130,32 @@ void Queue::ClearControls(CDialogEx* pParentDlg)
 
     // 清空编辑控件
     pParentDlg->GetDlgItem(IDC_EDIT8)->SetWindowText(_T(""));
+}
+
+void Queue::InitListControls(CListCtrl& list) {
+	list.InsertColumn(0, _T("Replication"), LVCFMT_LEFT, 50);
+	list.InsertColumn(1, _T("Mean interarrival time"), LVCFMT_LEFT, 100);
+	list.InsertColumn(2, _T("Mean service time"), LVCFMT_LEFT, 100);
+	list.InsertColumn(3, _T("Number of customers"), LVCFMT_LEFT, 100);
+	list.InsertColumn(4, _T("Average delay in queue"), LVCFMT_LEFT, 100);
+	list.InsertColumn(5, _T("Average number	in queue"), LVCFMT_LEFT, 100);
+	list.InsertColumn(6, _T("Service utilization"), LVCFMT_LEFT, 100);
+	list.InsertColumn(7, _T("Time simulation ended"), LVCFMT_LEFT, 100);
+	list.InsertItem(0, _T("1"));
+	list.SetItemText(0, 1, _T("2"));
+	list.InsertItem(1, _T("2"));
+	list.SetItemText(1, 1, _T("3"));
+}
+
+void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results) {
+	for (int i = 0; i < results.size(); i++) {
+		cout << results[i] << endl;
+	}
+	//while (results.size() > 0) {
+
+	//	CString cstring;
+	//	cstring.Format(_T("%d"), static_cast<int>(results[0]));
+	//	list.InsertItem(0, _T(""));
+	//	list.SetItemText(0, 0, cstring);
+	//}
 }

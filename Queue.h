@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "afxdialogex.h"
+#include "mm1.h"
+#include <string>
 
 
 // Queue 对话框
@@ -17,6 +19,9 @@ public:
 	enum { IDD = IDD_DIALOG2 };
 #endif
 
+private:
+	int m_nSelectRadio; // 用于跟踪当前选中的单选按钮
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
@@ -28,4 +33,6 @@ public:
 	CButton radio1;
 	afx_msg void OnBnClickedButton6();
 	void ClearControls(CDialogEx* pParentDlg);
+	void InitListControls(CListCtrl& list);
+	void ShowResultsInListCtrl(CListCtrl& list, vector<float> results);
 };
