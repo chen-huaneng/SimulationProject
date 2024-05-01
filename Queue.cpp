@@ -149,16 +149,22 @@ void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int co
 	for (int i = 0; i < results.size(); i++) {
 		cout << results[i] << endl;
 	}
+
+	// 插入一行
 	CString col;
 	col.Format(_T("%d"), column);
 	list.InsertItem(column, col);
+
+	// 设置第一列的值
 	CString strReplication;
 	strReplication.Format(_T("%d"), column + 1);
 	list.SetItemText(column, 0, strReplication);
-	for (int i = 1; i < results.size(); i++) {
+
+	// 设置其他列的值
+	for (int i = 0; i < results.size(); i++) {
 		CString strResult;
 		strResult.Format(_T("%f"), results[i]);
-		list.SetItemText(column, i, strResult);
+		list.SetItemText(column, i + 1, strResult);
 	}
 }
 

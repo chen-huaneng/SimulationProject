@@ -33,7 +33,9 @@ vector<float> mm1(float m_l, float m_s, int n_d_r) /* Main function. */
         /* Determine the next event. */
 
 		printf("num_custs_delayed: %d\n", num_custs_delayed);
-        timing();
+        if (timing() == 1) {
+            return results;
+        }
 
         /* Update time-average statistical accumulators. */
 
@@ -44,7 +46,9 @@ vector<float> mm1(float m_l, float m_s, int n_d_r) /* Main function. */
         switch (next_event_type)
         {
         case 1:
-            arrive();
+            if (arrive() == 2) {
+                return results;
+            }
             break;
         case 2:
             depart();
@@ -89,7 +93,7 @@ void initialize(void) /* Initialization function. */
     time_next_event[2] = 1.0e+30;
 }
 
-void timing(void) /* Timing function. */
+int timing(void) /* Timing function. */
 {
     int i;
     float min_time_next_event = 1.0e+29;
@@ -114,15 +118,17 @@ void timing(void) /* Timing function. */
         //fprintf(outfile, "\nEvent list empty at time %f", sim_time);
 		printf("\nEvent list empty at time %f", sim_time);
         //exit(1);
-        return;
+		results.push_back(sim_time);
+        return 1;
     }
 
     /* The event list is not empty, so advance the simulation clock. */
 
     sim_time = min_time_next_event;
+    return 0;
 }
 
-void arrive(void) /* Arrival event function. */
+int arrive(void) /* Arrival event function. */
 {
     float delay;
 
@@ -148,7 +154,8 @@ void arrive(void) /* Arrival event function. */
             //fprintf(outfile, " time %f", sim_time);
 			printf("\nOverflow of the array time_arrival at");
 			printf(" time %f", sim_time);
-            return;
+			results.push_back(sim_time);
+            return 2;
             //exit(2);
         }
 
@@ -156,6 +163,7 @@ void arrive(void) /* Arrival event function. */
            arriving customer at the (new) end of time_arrival. */
 
         time_arrival[num_in_q] = sim_time;
+        return 0;
     }
 
     else
@@ -214,8 +222,9 @@ void depart(void) /* Departure event function. */
 
         /* Move each customer in queue (if any) up one place. */
 
-        for (i = 1; i <= num_in_q; ++i)
+        for (i = 1; i <= num_in_q; ++i) {
             time_arrival[i] = time_arrival[i + 1];
+        }
     }
 }
 
@@ -230,15 +239,6 @@ void report(void) /* Report generator function. */
 	results.push_back(area_num_in_q / sim_time);
 	results.push_back(area_server_status / sim_time);
 	results.push_back(sim_time);
-
-
-    //fprintf(outfile, "\n\nAverage delay in queue%11.3f minutes\n\n",
-    //        total_of_delays / num_custs_delayed);
-    //fprintf(outfile, "Average number in queue%10.3f\n\n",
-    //        area_num_in_q / sim_time);
-    //fprintf(outfile, "Server utilization%15.3f\n\n",
-    //        area_server_status / sim_time);
-    //fprintf(outfile, "Time simulation ended%12.3f minutes", sim_time);
 }
 
 void update_time_avg_stats(void) /* Update area accumulators for time-average

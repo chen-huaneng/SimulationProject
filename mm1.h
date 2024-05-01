@@ -15,8 +15,8 @@ using namespace std;
 
 vector<float> mm1(float mean_interarrival, float mean_service, int num_delays_required);
 void initialize();
-void timing();
-void arrive();
+int timing();
+int arrive();
 void depart();
 void report();
 void update_time_avg_stats();
