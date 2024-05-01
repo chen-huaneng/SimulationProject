@@ -27,6 +27,7 @@ void Queue::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, list);
 	DDX_Control(pDX, IDC_RADIO1, radio1);
+	DDX_Control(pDX, IDC_EDIT8, output);
 }
 
 
@@ -35,6 +36,8 @@ BEGIN_MESSAGE_MAP(Queue, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON6, &Queue::OnBnClickedButton6)
 	ON_BN_CLICKED(IDC_BUTTON5, &Queue::OnBnClickedButton5)
 	ON_BN_CLICKED(IDC_BUTTON5, &Queue::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON1, &Queue::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON3, &Queue::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -58,6 +61,7 @@ BOOL Queue::OnInitDialog()
 
 	// 初始化列表控件
 	InitListControls(this->list);
+	InitValues(this);
 
 	// 设置默认选中第一个单选按钮
 	((CButton*)GetDlgItem(IDC_RADIO1))->SetCheck(TRUE);
@@ -94,15 +98,19 @@ void Queue::OnBnClickedButton6()
 	CString replication;
 	GetDlgItemText(IDC_EDIT6, replication);
 
-	// 获取种子值
-	CString seed;
-	GetDlgItemText(IDC_EDIT7, seed);
-	CWnd* pEditCtrl = GetDlgItem(IDC_EDIT7); // 获取编辑框的指针
-	long seed_long = _wtol(seed);
-	if (pEditCtrl != nullptr && seed_long > 0) {
-		lcgrandst(seed_long, 1);
+	// 获取编辑控件的指针
+	CString strTemp;
+	output.GetWindowText(strTemp);
+	if (!strTemp.IsEmpty()) {
+		// 追加新的文本
+		strTemp += _T("\r\n") + seed;
 	}
-	printf("seed_long: %ld\n", seed_long);
+	else {
+		strTemp = seed;
+	}
+
+	// 将新的文本设置到文本框中
+	output.SetWindowText(strTemp);
 
 	// 将CString转换为float
 	int replication_int = _ttoi(replication);
@@ -144,7 +152,7 @@ void Queue::ClearControls(CDialogEx* pParentDlg)
     //pListCtrl->DeleteAllItems();
 
     // 清空编辑控件
-    pParentDlg->GetDlgItem(IDC_EDIT8)->SetWindowText(_T(""));
+    //pParentDlg->GetDlgItem(IDC_EDIT8)->SetWindowText(_T(""));
 }
 
 void Queue::InitListControls(CListCtrl& list) {
@@ -190,5 +198,36 @@ void Queue::OnBnClickedButton5()
 
 	// 清空编辑控件
 	SetDlgItemText(IDC_EDIT8, _T(""));
-
 }
+
+void Queue::InitValues(CDialogEx* pParentDlg) {
+	// 初始化编辑框的值
+	SetDlgItemText(IDC_EDIT1, _T("1.0"));
+	SetDlgItemText(IDC_EDIT2, _T("0.5"));
+	SetDlgItemText(IDC_EDIT3, _T("1000"));
+	SetDlgItemText(IDC_EDIT6, _T("5"));
+	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
+	seed = "1973272912"; // 默认种子值
+}
+
+
+void Queue::OnBnClickedButton1()
+{
+	// 获取种子值
+	GetDlgItemText(IDC_EDIT7, seed);
+	CWnd* pEditCtrl1 = GetDlgItem(IDC_EDIT7); // 获取编辑框的指针
+	long seed_long = _wtol(seed);
+
+	// 更改种子值
+	if (pEditCtrl1 != nullptr && seed_long > 0) {
+		lcgrandst(seed_long, 1);
+	}
+}
+
+
+void Queue::OnBnClickedButton3()
+{
+	// 清空编辑控件
+	SetDlgItemText(IDC_EDIT8, _T(""));
+}
+

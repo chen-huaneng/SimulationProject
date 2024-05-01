@@ -58,7 +58,6 @@ static long zrng[] =
 float lcgrand(int stream)
 {
     long zi, lowprd, hi31;
-	printf("zrng[stream]: %ld\n", zrng[stream]);
 
     zi = zrng[stream];
     lowprd = (zi & 65535) * MULT1;
@@ -81,7 +80,6 @@ void lcgrandst(long zset, int stream) /* Set the current zrng for stream
                                          "stream" to zset. */
 {
     zrng[stream] = zset;
-	printf("zrng[stream]: %ld\n", zrng[stream]);
 }
 
 long lcgrandgt(int stream) /* Return the current zrng for stream "stream". */
