@@ -5,6 +5,7 @@
 #include "MSS.h"
 #include "afxdialogex.h"
 #include "Queue.h"
+#include "lcgrand.h"
 
 
 // Queue 对话框
@@ -92,6 +93,16 @@ void Queue::OnBnClickedButton6()
 	GetDlgItemText(IDC_EDIT2, mean_service);
 	CString replication;
 	GetDlgItemText(IDC_EDIT6, replication);
+
+	// 获取种子值
+	CString seed;
+	GetDlgItemText(IDC_EDIT7, seed);
+	CWnd* pEditCtrl = GetDlgItem(IDC_EDIT7); // 获取编辑框的指针
+	long seed_long = _wtol(seed);
+	if (pEditCtrl != nullptr && seed_long > 0) {
+		lcgrandst(seed_long, 1);
+	}
+	printf("seed_long: %ld\n", seed_long);
 
 	// 将CString转换为float
 	int replication_int = _ttoi(replication);
