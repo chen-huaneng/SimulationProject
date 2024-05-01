@@ -165,9 +165,12 @@ void Queue::InitListControls(CListCtrl& list) {
 	list.InsertColumn(5, _T("Average number	in queue"), LVCFMT_LEFT, 100);
 	list.InsertColumn(6, _T("Service utilization"), LVCFMT_LEFT, 100);
 	list.InsertColumn(7, _T("Time simulation ended"), LVCFMT_LEFT, 100);
+	
+	// 设置列宽
 	CHeaderCtrl* pHdrCtrl = list.GetHeaderCtrl();
-	for (int i = 0; i < pHdrCtrl->GetItemCount(); ++i)
+	for (int i = 0; i < pHdrCtrl->GetItemCount(); ++i) {
 		list.SetColumnWidth(i, LVSCW_AUTOSIZE_USEHEADER);
+	}
 
 	// 重置行数
 	rowCount = 0;
