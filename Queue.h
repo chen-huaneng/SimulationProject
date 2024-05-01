@@ -21,6 +21,7 @@ public:
 
 private:
 	int m_nSelectRadio; // 用于跟踪当前选中的单选按钮
+	int rowCount; // 用于跟踪列表控件的行数
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持

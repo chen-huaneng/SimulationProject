@@ -43,7 +43,6 @@ END_MESSAGE_MAP()
 void Queue::OnLvnItemchangedList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
 }
 
@@ -99,6 +98,9 @@ void Queue::OnBnClickedButton6()
 	float mean_interarrival_float = _ttof(mean_interarrival);
 	float mean_service_float = _ttof(mean_service);
 
+	// 获取列表控件的行数
+	rowCount = list.GetItemCount();
+
     // 判断哪一个单选按钮是选中的
     if (radio1State == BST_CHECKED)
     {
@@ -106,7 +108,7 @@ void Queue::OnBnClickedButton6()
 		GetDlgItemText(IDC_EDIT3, num_delays_required);
 		int num_delays_required_float = _ttoi(num_delays_required);
 		
-		for (int i = 0; i < replication_int; i++)
+		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
 			vector<float> results = mm1(mean_interarrival_float, mean_service_float, num_delays_required_float);
 			ShowResultsInListCtrl(list, results, i);
@@ -127,14 +129,15 @@ void Queue::OnBnClickedButton6()
 void Queue::ClearControls(CDialogEx* pParentDlg)
 {
     // 清空列表控件
-    CListCtrl* pListCtrl = (CListCtrl*)pParentDlg->GetDlgItem(IDC_LIST1);
-    pListCtrl->DeleteAllItems();
+    //CListCtrl* pListCtrl = (CListCtrl*)pParentDlg->GetDlgItem(IDC_LIST1);
+    //pListCtrl->DeleteAllItems();
 
     // 清空编辑控件
     pParentDlg->GetDlgItem(IDC_EDIT8)->SetWindowText(_T(""));
 }
 
 void Queue::InitListControls(CListCtrl& list) {
+	// 设置列表的每列
 	list.InsertColumn(0, _T("Replication"), LVCFMT_LEFT, 50);
 	list.InsertColumn(1, _T("Mean interarrival time"), LVCFMT_LEFT, 100);
 	list.InsertColumn(2, _T("Mean service time"), LVCFMT_LEFT, 100);
@@ -143,13 +146,13 @@ void Queue::InitListControls(CListCtrl& list) {
 	list.InsertColumn(5, _T("Average number	in queue"), LVCFMT_LEFT, 100);
 	list.InsertColumn(6, _T("Service utilization"), LVCFMT_LEFT, 100);
 	list.InsertColumn(7, _T("Time simulation ended"), LVCFMT_LEFT, 100);
+
+	// 重置行数
+	rowCount = 0;
 }
 
-void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int column) {
-	for (int i = 0; i < results.size(); i++) {
-		cout << results[i] << endl;
-	}
 
+void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int column) {
 	// 插入一行
 	CString col;
 	col.Format(_T("%d"), column);

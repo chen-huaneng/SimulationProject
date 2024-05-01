@@ -32,7 +32,6 @@ vector<float> mm1(float m_l, float m_s, int n_d_r) /* Main function. */
     {
         /* Determine the next event. */
 
-		printf("num_custs_delayed: %d\n", num_custs_delayed);
         if (timing() == 1) {
             return results;
         }
@@ -115,9 +114,7 @@ int timing(void) /* Timing function. */
     {
         /* The event list is empty, so stop the simulation. */
 
-        //fprintf(outfile, "\nEvent list empty at time %f", sim_time);
 		printf("\nEvent list empty at time %f", sim_time);
-        //exit(1);
 		results.push_back(sim_time);
         return 1;
     }
@@ -150,13 +147,10 @@ int arrive(void) /* Arrival event function. */
         {
             /* The queue has overflowed, so stop the simulation. */
 
-            //fprintf(outfile, "\nOverflow of the array time_arrival at");
-            //fprintf(outfile, " time %f", sim_time);
 			printf("\nOverflow of the array time_arrival at");
 			printf(" time %f", sim_time);
 			results.push_back(sim_time);
             return 2;
-            //exit(2);
         }
 
         /* There is still room in the queue, so store the time of arrival of the
