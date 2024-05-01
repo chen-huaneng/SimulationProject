@@ -24,6 +24,7 @@ Queue::~Queue()
 void Queue::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST1, list);
 }
 
 
@@ -40,4 +41,25 @@ void Queue::OnLvnItemchangedList1(NMHDR* pNMHDR, LRESULT* pResult)
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
 	*pResult = 0;
+}
+
+
+BOOL Queue::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此添加额外的初始化
+	list.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 50);
+	list.InsertColumn(1, _T("Name"), LVCFMT_LEFT, 100);
+	list.InsertColumn(2, _T("Time"), LVCFMT_LEFT, 100);
+	list.InsertColumn(3, _T("Type"), LVCFMT_LEFT, 100);
+	list.InsertColumn(4, _T("Status"), LVCFMT_LEFT, 100);
+	list.InsertColumn(5, _T("Window"), LVCFMT_LEFT, 100);
+	list.InsertItem(0, _T("1"));
+	list.SetItemText(0, 1, _T("2"));
+	list.InsertItem(1, _T("2"));
+	list.SetItemText(1, 1, _T("3"));
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 FALSE
 }
