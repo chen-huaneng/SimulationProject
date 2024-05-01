@@ -34,5 +34,6 @@ public:
 	afx_msg void OnBnClickedButton6();
 	void ClearControls(CDialogEx* pParentDlg);
 	void InitListControls(CListCtrl& list);
-	void ShowResultsInListCtrl(CListCtrl& list, vector<float> results);
+	void ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int replication);
+	afx_msg void OnBnClickedButton5();
 };

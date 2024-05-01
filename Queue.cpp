@@ -32,6 +32,8 @@ void Queue::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(Queue, CDialogEx)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &Queue::OnLvnItemchangedList1)
 	ON_BN_CLICKED(IDC_BUTTON6, &Queue::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON5, &Queue::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON5, &Queue::OnBnClickedButton5)
 END_MESSAGE_MAP()
 
 
@@ -84,31 +86,31 @@ void Queue::OnBnClickedButton6()
     int radio3State = ((CButton*)GetDlgItem(IDC_RADIO3))->GetCheck();
     int radio4State = ((CButton*)GetDlgItem(IDC_RADIO4))->GetCheck();
 
+	// 获取编辑框中的值
+	CString mean_interarrival;
+	GetDlgItemText(IDC_EDIT1, mean_interarrival);
+	CString mean_service;
+	GetDlgItemText(IDC_EDIT2, mean_service);
+	CString replication;
+	GetDlgItemText(IDC_EDIT6, replication);
+
+	// 将CString转换为float
+	int replication_int = _ttoi(replication);
+	float mean_interarrival_float = _ttof(mean_interarrival);
+	float mean_service_float = _ttof(mean_service);
+
     // 判断哪一个单选按钮是选中的
     if (radio1State == BST_CHECKED)
     {
-		CString mean_interarrival;
-		GetDlgItemText(IDC_EDIT1, mean_interarrival);
-		CString mean_service;
-		GetDlgItemText(IDC_EDIT2, mean_service);
 		CString num_delays_required;
 		GetDlgItemText(IDC_EDIT3, num_delays_required);
-		CString replication;
-		GetDlgItemText(IDC_EDIT6, replication);
-		int replication_int = _ttoi(replication);
-		float mean_interarrival_float = _ttof(mean_interarrival);
-		float mean_service_float = _ttof(mean_service);
 		int num_delays_required_float = _ttoi(num_delays_required);
-
-		//printf("mean_interarrival: %f\n", mean_interarrival_float);
-		//printf("mean_service: %f\n", mean_service_float);
-		//printf("num_delays_required: %d\n", num_delays_required_float);
-		//printf("replication: %d\n", replication_int);
 		
-		vector<float> results = mm1(mean_interarrival_float, mean_service_float, num_delays_required_float);
-		results.insert(results.begin(), replication_int);
-		ShowResultsInListCtrl(list, results);
-
+		for (int i = 0; i < replication_int; i++)
+		{
+			vector<float> results = mm1(mean_interarrival_float, mean_service_float, num_delays_required_float);
+			ShowResultsInListCtrl(list, results, i);
+		}
     }
     else if (radio2State == BST_CHECKED)
     {
@@ -125,8 +127,8 @@ void Queue::OnBnClickedButton6()
 void Queue::ClearControls(CDialogEx* pParentDlg)
 {
     // 清空列表控件
-    //CListCtrl* pListCtrl = (CListCtrl*)pParentDlg->GetDlgItem(IDC_LIST1);
-    //pListCtrl->DeleteAllItems();
+    CListCtrl* pListCtrl = (CListCtrl*)pParentDlg->GetDlgItem(IDC_LIST1);
+    pListCtrl->DeleteAllItems();
 
     // 清空编辑控件
     pParentDlg->GetDlgItem(IDC_EDIT8)->SetWindowText(_T(""));
@@ -141,21 +143,32 @@ void Queue::InitListControls(CListCtrl& list) {
 	list.InsertColumn(5, _T("Average number	in queue"), LVCFMT_LEFT, 100);
 	list.InsertColumn(6, _T("Service utilization"), LVCFMT_LEFT, 100);
 	list.InsertColumn(7, _T("Time simulation ended"), LVCFMT_LEFT, 100);
-	list.InsertItem(0, _T("1"));
-	list.SetItemText(0, 1, _T("2"));
-	list.InsertItem(1, _T("2"));
-	list.SetItemText(1, 1, _T("3"));
 }
 
-void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results) {
+void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int column) {
 	for (int i = 0; i < results.size(); i++) {
 		cout << results[i] << endl;
 	}
-	//while (results.size() > 0) {
+	CString col;
+	col.Format(_T("%d"), column);
+	list.InsertItem(column, col);
+	CString strReplication;
+	strReplication.Format(_T("%d"), column + 1);
+	list.SetItemText(column, 0, strReplication);
+	for (int i = 1; i < results.size(); i++) {
+		CString strResult;
+		strResult.Format(_T("%f"), results[i]);
+		list.SetItemText(column, i, strResult);
+	}
+}
 
-	//	CString cstring;
-	//	cstring.Format(_T("%d"), static_cast<int>(results[0]));
-	//	list.InsertItem(0, _T(""));
-	//	list.SetItemText(0, 0, cstring);
-	//}
+
+void Queue::OnBnClickedButton5()
+{
+	// 清空列表控件
+	list.DeleteAllItems();
+
+	// 清空编辑控件
+	SetDlgItemText(IDC_EDIT8, _T(""));
+
 }
