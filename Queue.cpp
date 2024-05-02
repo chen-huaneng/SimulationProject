@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(Queue, CDialogEx)
 	ON_BN_CLICKED(IDC_RADIO1, &Queue::OnBnClickedRadio1)
 	ON_BN_CLICKED(IDC_RADIO3, &Queue::OnBnClickedRadio3)
 	ON_BN_CLICKED(IDC_RADIO4, &Queue::OnBnClickedRadio4)
+	ON_BN_CLICKED(IDC_BUTTON4, &Queue::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -294,4 +295,21 @@ void Queue::OnBnClickedRadio4()
 	// 设置编辑控件为只读
 	openTime.SetReadOnly(TRUE);
 	closeTime.SetReadOnly(TRUE);
+}
+
+
+void Queue::OnBnClickedButton4()
+{
+	// 初始化编辑框的值
+	SetDlgItemText(IDC_EDIT1, _T("1.0"));
+	SetDlgItemText(IDC_EDIT2, _T("0.5"));
+	SetDlgItemText(IDC_EDIT3, _T("1000"));
+	SetDlgItemText(IDC_EDIT4, _T("0"));
+	SetDlgItemText(IDC_EDIT5, _T("0"));
+	SetDlgItemText(IDC_EDIT6, _T("5"));
+	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
+	SetDlgItemText(IDC_EDIT10, _T("9"));
+	SetDlgItemText(IDC_EDIT11, _T("17"));
+	
+	seed = "1973272912"; // 默认种子值
 }

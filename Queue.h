@@ -50,4 +50,5 @@ public:
 	afx_msg void OnBnClickedRadio1();
 	afx_msg void OnBnClickedRadio3();
 	afx_msg void OnBnClickedRadio4();
+	afx_msg void OnBnClickedButton4();
 };
