@@ -157,14 +157,22 @@ void Queue::ClearControls(CDialogEx* pParentDlg)
 
 void Queue::InitListControls(CListCtrl& list) {
 	// 设置列表的每列
-	list.InsertColumn(0, _T("Replication"), LVCFMT_LEFT, 50);
-	list.InsertColumn(1, _T("Mean interarrival time"), LVCFMT_LEFT, 100);
-	list.InsertColumn(2, _T("Mean service time"), LVCFMT_LEFT, 100);
-	list.InsertColumn(3, _T("Number of customers"), LVCFMT_LEFT, 100);
-	list.InsertColumn(4, _T("Average delay in queue"), LVCFMT_LEFT, 100);
-	list.InsertColumn(5, _T("Average number	in queue"), LVCFMT_LEFT, 100);
-	list.InsertColumn(6, _T("Service utilization"), LVCFMT_LEFT, 100);
-	list.InsertColumn(7, _T("Time simulation ended"), LVCFMT_LEFT, 100);
+	int col = 0;
+	list.InsertColumn(col++, _T("Replication"), LVCFMT_LEFT, 50);
+	//list.InsertColumn(col++, _T("Mean interarrival time"), LVCFMT_LEFT, 100);
+	//list.InsertColumn(col++, _T("Mean service time"), LVCFMT_LEFT, 100);
+	//list.InsertColumn(col++, _T("Number of customers"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Average delay in queue"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Average number	in queue"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Service utilization"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Time simulation ended"), LVCFMT_LEFT, 100);
+
+	list.InsertColumn(col++, _T("Time-average number in system"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Average total time in the system of customers"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Maximum queue length"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Maximum delay in queue"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Maximum time in the system"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Proportion of customers delay in queue in excess of 1 minute"), LVCFMT_LEFT, 100);
 	
 	// 设置列宽
 	CHeaderCtrl* pHdrCtrl = list.GetHeaderCtrl();

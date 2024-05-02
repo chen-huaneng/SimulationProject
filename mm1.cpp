@@ -9,6 +9,15 @@ float area_num_in_q, area_server_status, mean_interarrival, mean_service,
     sim_time, time_arrival[Q_LIMIT + 1], time_last_event, time_next_event[3],
     total_of_delays;
 vector<float> results;
+float total_num_in_system; // 用于累积系统中的人数
+float total_time_in_system; // 用于累积系统中的总时间
+int max_queue_length; // 用于记录最大队列长度
+float max_delay = 0.0; // 在全局定义中添加最大延迟变量
+float max_time_in_system; // 最大系统时间
+
+/* Initialize the count for customers delayed over 1 minute. */
+int num_custs_delayed_over_1_min = 0;
+
 
 vector<float> mm1(float m_l, float m_s, int n_d_r) /* Main function. */
 {
@@ -77,6 +86,9 @@ void initialize(void) /* Initialization function. */
     server_status = IDLE;
     num_in_q = 0;
     time_last_event = 0.0;
+    max_queue_length = 0; // 初始化最大队列长度
+    max_delay = 0.0;    // 初始化最大延迟变量
+    max_time_in_system = 0.0; // 初始化最大系统时间
 
     /* Initialize the statistical counters. */
 
@@ -84,6 +96,8 @@ void initialize(void) /* Initialization function. */
     total_of_delays = 0.0;
     area_num_in_q = 0.0;
     area_server_status = 0.0;
+    total_num_in_system = 0.0; // 初始化系统中的人数
+    total_time_in_system = 0.0; // 初始化系统中的总时间
 
     /* Initialize event list.  Since no customers are present, the departure
        (service completion) event is eliminated from consideration. */
@@ -122,6 +136,11 @@ int timing(void) /* Timing function. */
     /* The event list is not empty, so advance the simulation clock. */
 
     sim_time = min_time_next_event;
+
+	 // 更新最大系统时间
+    if (next_event_type != 0 && (sim_time - time_last_event) > max_time_in_system) {
+        max_time_in_system = sim_time - time_last_event;
+    }
     return 0;
 }
 
@@ -141,6 +160,12 @@ int arrive(void) /* Arrival event function. */
 
         ++num_in_q;
 
+        /* Update max_queue_length if needed. */
+
+        if (num_in_q > max_queue_length) {
+            max_queue_length = num_in_q;
+        }
+
         /* Check to see whether an overflow condition exists. */
 
         if (num_in_q > Q_LIMIT)
@@ -158,10 +183,7 @@ int arrive(void) /* Arrival event function. */
 
         time_arrival[num_in_q] = sim_time;
         return 0;
-    }
-
-    else
-    {
+    } else {
         /* Server is idle, so arriving customer has a delay of zero.  (The
            following two statements are for program clarity and do not affect
            the results of the simulation.) */
@@ -169,10 +191,21 @@ int arrive(void) /* Arrival event function. */
         delay = 0.0;
         total_of_delays += delay;
 
+        // 如果顾客延迟时间超过一分钟
+		if (delay > 1.0) {
+			++num_custs_delayed_over_1_min;
+		}
+
         /* Increment the number of customers delayed, and make server busy. */
 
         ++num_custs_delayed;
         server_status = BUSY;
+
+		// 在顾客开始服务时计算延迟并更新最大延迟变量
+        delay = sim_time - time_arrival[1];
+        if (delay > max_delay) {
+            max_delay = delay;
+        }
 
         /* Schedule a departure (service completion). */
 
@@ -213,6 +246,12 @@ void depart(void) /* Departure event function. */
 
         ++num_custs_delayed;
         time_next_event[2] = sim_time + expon(mean_service);
+        
+		 // 在顾客离开时计算延迟并更新最大延迟变量
+        delay = sim_time - time_arrival[1];
+        if (delay > max_delay) {
+            max_delay = delay;
+        }
 
         /* Move each customer in queue (if any) up one place. */
 
@@ -225,14 +264,23 @@ void depart(void) /* Departure event function. */
 void report(void) /* Report generator function. */
 {
     /* Compute and write estimates of desired measures of performance. */
-	results.push_back(mean_interarrival);
-	results.push_back(mean_service);
-	results.push_back(num_delays_required);
+	//results.push_back(mean_interarrival);
+	//results.push_back(mean_service);
+	//results.push_back(num_delays_required);
 
 	results.push_back(total_of_delays / num_custs_delayed);
 	results.push_back(area_num_in_q / sim_time);
 	results.push_back(area_server_status / sim_time);
 	results.push_back(sim_time);
+
+    results.push_back(total_num_in_system / sim_time); // 计算系统中的平均人数
+    results.push_back(total_time_in_system / num_custs_delayed); // 计算顾客在系统中的平均总时间
+    results.push_back(max_queue_length); // 记录最大队列长度
+    results.push_back(max_delay);    // 将最大延迟写入结果向量
+    results.push_back(max_time_in_system); // 写入最大系统时间
+
+	float proportion_delayed_over_1_min = (float)num_custs_delayed_over_1_min / num_custs_delayed;
+	results.push_back(proportion_delayed_over_1_min);
 }
 
 void update_time_avg_stats(void) /* Update area accumulators for time-average
@@ -252,6 +300,11 @@ void update_time_avg_stats(void) /* Update area accumulators for time-average
     /* Update area under server-busy indicator function. */
 
     area_server_status += server_status * time_since_last_event;
+    
+	// 更新系统中的人数
+    total_num_in_system += (num_in_q + server_status) * time_since_last_event;
+	// 更新系统中的总时间
+    total_time_in_system += (num_in_q + server_status) * time_since_last_event;
 }
 
 float expon(float mean) /* Exponential variate generation function. */
