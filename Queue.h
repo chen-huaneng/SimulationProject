@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "afxdialogex.h"
 #include "mm1.h"
+//#include "mm1alt.h"
 #include <string>
 
 
@@ -43,4 +44,10 @@ public:
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton2();
+	CEdit openTime;
+	CEdit closeTime;
+	afx_msg void OnBnClickedRadio2();
+	afx_msg void OnBnClickedRadio1();
+	afx_msg void OnBnClickedRadio3();
+	afx_msg void OnBnClickedRadio4();
 };

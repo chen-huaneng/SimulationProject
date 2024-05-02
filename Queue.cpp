@@ -28,6 +28,8 @@ void Queue::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, list);
 	DDX_Control(pDX, IDC_RADIO1, radio1);
 	DDX_Control(pDX, IDC_EDIT8, output);
+	DDX_Control(pDX, IDC_EDIT10, openTime);
+	DDX_Control(pDX, IDC_EDIT11, closeTime);
 }
 
 
@@ -38,6 +40,10 @@ BEGIN_MESSAGE_MAP(Queue, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON5, &Queue::OnBnClickedButton5)
 	ON_BN_CLICKED(IDC_BUTTON1, &Queue::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON3, &Queue::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_RADIO2, &Queue::OnBnClickedRadio2)
+	ON_BN_CLICKED(IDC_RADIO1, &Queue::OnBnClickedRadio1)
+	ON_BN_CLICKED(IDC_RADIO3, &Queue::OnBnClickedRadio3)
+	ON_BN_CLICKED(IDC_RADIO4, &Queue::OnBnClickedRadio4)
 END_MESSAGE_MAP()
 
 
@@ -135,6 +141,10 @@ void Queue::OnBnClickedButton6()
     }
     else if (radio2State == BST_CHECKED)
     {
+		printf("openTime:");
+		CString replication;
+		GetDlgItemText(IDC_EDIT6, replication);
+
     }
     else if (radio3State == BST_CHECKED)
     {
@@ -219,9 +229,18 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	SetDlgItemText(IDC_EDIT1, _T("1.0"));
 	SetDlgItemText(IDC_EDIT2, _T("0.5"));
 	SetDlgItemText(IDC_EDIT3, _T("1000"));
+	SetDlgItemText(IDC_EDIT4, _T("0"));
+	SetDlgItemText(IDC_EDIT5, _T("0"));
 	SetDlgItemText(IDC_EDIT6, _T("5"));
 	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
+	SetDlgItemText(IDC_EDIT10, _T("9"));
+	SetDlgItemText(IDC_EDIT11, _T("17"));
+	
 	seed = "1973272912"; // 默认种子值
+
+	// 设置编辑控件为只读
+	openTime.SetReadOnly(TRUE);
+	closeTime.SetReadOnly(TRUE);
 }
 
 
@@ -245,3 +264,34 @@ void Queue::OnBnClickedButton3()
 	SetDlgItemText(IDC_EDIT8, _T(""));
 }
 
+
+void Queue::OnBnClickedRadio1()
+{
+	// 设置编辑控件为只读
+	openTime.SetReadOnly(TRUE);
+	closeTime.SetReadOnly(TRUE);
+}
+
+
+void Queue::OnBnClickedRadio2()
+{
+	// 设置编辑控件为可编辑
+	openTime.SetReadOnly(FALSE);
+	closeTime.SetReadOnly(FALSE);
+}
+
+
+void Queue::OnBnClickedRadio3()
+{
+	// 设置编辑控件为只读
+	openTime.SetReadOnly(TRUE);
+	closeTime.SetReadOnly(TRUE);
+}
+
+
+void Queue::OnBnClickedRadio4()
+{
+	// 设置编辑控件为只读
+	openTime.SetReadOnly(TRUE);
+	closeTime.SetReadOnly(TRUE);
+}
