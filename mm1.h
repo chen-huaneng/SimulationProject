@@ -13,7 +13,6 @@ private:
 	#define Q_LIMIT 100 /* Limit on queue length. */
 	#define BUSY 1      /* Mnemonics for server's being busy */
 	#define IDLE 0      /* and idle. */
-	#define ARRAY_SIZE 10 /* Size of array to store statistics. */
 
 	int next_event_type, num_custs_delayed, num_delays_required, num_events,
 		num_in_q, server_status;

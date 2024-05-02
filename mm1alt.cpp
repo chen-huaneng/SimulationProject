@@ -3,25 +3,26 @@
 #include "mm1alt.h"
 #include "lcgrand.h" /* Header file for random-number generator. */
 
-vector<float> mm1alt::mm1Alt(float m_l, float m_s, int n_d_r, float open_time, float close_time) /* Main function. */
+vector<float> mm1alt::mm1Alt(float m_l, float m_s, float open_time, float close_time) /* Main function. */
 {
     /* Specify the number of events for the timing function. */
-
-    num_events = 2;
+    
+    num_events = 3;
 
     /* Read input parameters. */
 
 	mean_interarrival = m_l;
 	mean_service = m_s;
-	num_delays_required = n_d_r;
+    time_end = (close_time - open_time) * 60;
 
     /* Initialize the simulation. */
 
-    initializeAlt(open_time * 60, close_time * 60);
+    initialize();
 
-    /* Run the simulation while more delays are still needed. */
+    /* Run the simulation until it terminates after an end-simulation event
+       (type 3) occurs. */
 
-    while (num_custs_delayed < num_delays_required)
+    do
     {
         /* Determine the next event. */
 
@@ -45,17 +46,18 @@ vector<float> mm1alt::mm1Alt(float m_l, float m_s, int n_d_r, float open_time, f
         case 2:
             depart();
             break;
-        }
-    }
-
-    /* Invoke the report generator and end the simulation. */
-
-    report();
+        case 3:
+            report();
+            break;
+		}
+        /* If the event just executed was not the end-simulation event (type 3),
+           continue simulating.  Otherwise, end the simulation. */
+	} while (next_event_type != 3);
 
     return results;
 }
 
-void mm1alt::initializeAlt(float open_time, float close_time) /* Initialization function. */
+void mm1alt::initialize() /* Initialization function. */
 {
 	/* Initialize the results vector. */
 
@@ -71,6 +73,8 @@ void mm1alt::initializeAlt(float open_time, float close_time) /* Initialization 
     num_in_q = 0;
     time_last_event = 0.0;
 
+	// 初始化系统中的人数和总时间
+
     max_queue_length = 0; // 初始化最大队列长度
     max_delay = 0.0;    // 初始化最大延迟变量
     max_time_in_system = 0.0; // 初始化最大系统时间
@@ -82,15 +86,19 @@ void mm1alt::initializeAlt(float open_time, float close_time) /* Initialization 
     area_num_in_q = 0.0;
     area_server_status = 0.0;
 
+	// 初始化系统中的人数和总时间
+
     total_num_in_system = 0.0; // 初始化系统中的人数
     total_time_in_system = 0.0; // 初始化系统中的总时间
 	num_custs_delayed_over_1_min = 0; // 初始化计数器
 
     /* Initialize event list.  Since no customers are present, the departure
-       (service completion) event is eliminated from consideration. */
+       (service completion) event is eliminated from consideration.  The end-
+       simulation event (type 3) is scheduled for time time_end. */
 
     time_next_event[1] = sim_time + expon(mean_interarrival);
-    time_next_event[2] = (close_time - open_time);
+    time_next_event[2] = 1.0e+30;
+	time_next_event[3] = time_end;
 }
 
 int mm1alt::timing(void) /* Timing function. */
@@ -98,16 +106,17 @@ int mm1alt::timing(void) /* Timing function. */
     int i;
     float min_time_next_event = 1.0e+29;
 
-    next_event_type = 0;
+	next_event_type = 0;
 
     /* Determine the event type of the next event to occur. */
 
-    for (i = 1; i <= num_events; ++i)
+    for (i = 1; i <= num_events; ++i) {
         if (time_next_event[i] < min_time_next_event)
         {
             min_time_next_event = time_next_event[i];
             next_event_type = i;
         }
+    }
 
     /* Check to see whether the event list is empty. */
 
@@ -258,7 +267,7 @@ void mm1alt::report(void) /* Report generator function. */
 	results.push_back(total_of_delays / num_custs_delayed);
 	results.push_back(area_num_in_q / sim_time);
 	results.push_back(area_server_status / sim_time);
-	results.push_back(sim_time);
+	results.push_back(num_custs_delayed);
 
     results.push_back(total_num_in_system / sim_time); // 计算系统中的平均人数
     results.push_back(total_time_in_system / num_custs_delayed); // 计算顾客在系统中的平均总时间
@@ -289,7 +298,17 @@ void mm1alt::update_time_avg_stats(void) /* Update area accumulators for time-av
     area_server_status += server_status * time_since_last_event;
     
 	// 更新系统中的人数
+
     total_num_in_system += (num_in_q + server_status) * time_since_last_event;
+
 	// 更新系统中的总时间
+
     total_time_in_system += (num_in_q + server_status) * time_since_last_event;
+}
+
+float mm1alt::expon(float mean) /* Exponential variate generation function. */
+{
+    /* Return an exponential random variate with mean "mean". */
+
+    return -mean * log(lcgrand(1));
 }

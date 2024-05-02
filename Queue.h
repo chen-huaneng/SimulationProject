@@ -38,6 +38,7 @@ public:
 	void ClearControls(CDialogEx* pParentDlg);
 	void InitListControls(CListCtrl& list);
 	void ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int replication);
+	void Queue::UpdateColumn(CDialogEx* pParentDlg);
 	afx_msg void OnBnClickedButton5();
 	void InitValues(CDialogEx* pParentDlg);
 	CEdit output;

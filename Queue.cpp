@@ -89,13 +89,30 @@ BOOL Queue::OnInitDialog()
 
 void Queue::OnBnClickedButton6()
 {
-	// 初始化控件状态
-	ClearControls(this);
-	// 获取每个单选按钮的状态
-    int radio1State = ((CButton*)GetDlgItem(IDC_RADIO1))->GetCheck();
-    int radio2State = ((CButton*)GetDlgItem(IDC_RADIO2))->GetCheck();
-    int radio3State = ((CButton*)GetDlgItem(IDC_RADIO3))->GetCheck();
-    int radio4State = ((CButton*)GetDlgItem(IDC_RADIO4))->GetCheck();
+	// 暂存上一次的按钮ID
+	int tmp = m_nSelectRadio;
+
+	// 定义一个存储单选按钮 ID 的数组
+	int radioButtons[] = { IDC_RADIO1, IDC_RADIO2, IDC_RADIO3, IDC_RADIO4 };
+
+	// 定义一个存储单选按钮状态的数组
+	int radioStates[4];
+
+	// 使用循环遍历单选按钮数组
+	for (int i = 0; i < 4; ++i) {
+		// 获取当前单选按钮的状态
+		radioStates[i] = ((CButton*)GetDlgItem(radioButtons[i]))->GetCheck();
+		if (radioStates[i] == BST_CHECKED) {
+			m_nSelectRadio = radioButtons[i];
+		}
+	}
+	
+	// 判断是否需要更新列表的列
+	if (tmp != m_nSelectRadio) {
+		// 初始化控件状态
+		ClearControls(this);
+		UpdateColumn(this);
+	}
 
 	// 获取编辑框中的值
 	CString mean_interarrival;
@@ -128,40 +145,58 @@ void Queue::OnBnClickedButton6()
 	rowCount = list.GetItemCount();
 
     // 判断哪一个单选按钮是选中的
-    if (radio1State == BST_CHECKED)
-    {
-		mm1 m;
+	switch (m_nSelectRadio) {
+	case IDC_RADIO1:
+	{
 		CString num_delays_required;
 		GetDlgItemText(IDC_EDIT3, num_delays_required);
 		int num_delays_required_float = _ttoi(num_delays_required);
-		
+
+		mm1 m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
 			vector<float> results = m.mm1function(mean_interarrival_float, mean_service_float, num_delays_required_float);
 			ShowResultsInListCtrl(list, results, i);
 		}
-    }
-    else if (radio2State == BST_CHECKED)
-    {
-		printf("openTime:");
-		CString replication;
-		GetDlgItemText(IDC_EDIT6, replication);
+		break;
+	}
+	case IDC_RADIO2:
+	{
+		// 获取编辑框中的值
+		CString open_time_value;
+		GetDlgItemText(IDC_EDIT10, open_time_value);
+		CString close_time_value;
+		GetDlgItemText(IDC_EDIT11, close_time_value);
 
-    }
-    else if (radio3State == BST_CHECKED)
-    {
-    }
-    else if (radio4State == BST_CHECKED)
-    {
-    }
+		// 将CString转换为float
+		float o_t = _ttof(open_time_value);
+		float c_t = _ttof(close_time_value);
+
+		mm1alt m;
+		for (int i = rowCount; i < replication_int + rowCount; i++)
+		{
+			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, o_t, c_t);
+			ShowResultsInListCtrl(list, results, i);
+		}
+		break;
+	}
+	case IDC_RADIO3:
+	{
+		break;
+	}
+	case IDC_RADIO4:
+	{
+		break;
+	}
+	}
 }
 
 
 void Queue::ClearControls(CDialogEx* pParentDlg)
 {
     // 清空列表控件
-    //CListCtrl* pListCtrl = (CListCtrl*)pParentDlg->GetDlgItem(IDC_LIST1);
-    //pListCtrl->DeleteAllItems();
+    CListCtrl* pListCtrl = (CListCtrl*)pParentDlg->GetDlgItem(IDC_LIST1);
+    pListCtrl->DeleteAllItems();
 
     // 清空编辑控件
     //pParentDlg->GetDlgItem(IDC_EDIT8)->SetWindowText(_T(""));
@@ -313,4 +348,28 @@ void Queue::OnBnClickedButton4()
 	SetDlgItemText(IDC_EDIT11, _T("17"));
 	
 	seed = "1973272912"; // 默认种子值
+}
+
+
+void Queue::UpdateColumn(CDialogEx* pParentDlg) {
+	// 创建一个LVCOLUMNW结构，设置新的列名
+	LVCOLUMNW column;
+	column.mask = LVCF_TEXT; // 表示只设置列的文本
+	switch (m_nSelectRadio) {
+	case IDC_RADIO1:
+		column.pszText = (LPWSTR)(LPCTSTR)_T("Time simulation ended");
+		break;
+	case IDC_RADIO2:
+		column.pszText = (LPWSTR)(LPCTSTR)_T("Number of delays completed");
+		break;
+	case IDC_RADIO3:
+		column.pszText = (LPWSTR)(LPCTSTR)_T("Number of customers delayed");
+		break;
+	case IDC_RADIO4:
+		column.pszText = (LPWSTR)(LPCTSTR)_T("Number of delays completed");
+		break;
+	}
+
+	// 调用SetColumn函数设置新的列名
+	list.SetColumn(4, &column);
 }
