@@ -2,6 +2,7 @@
 #include "afxdialogex.h"
 #include "mm1.h"
 #include "mm1alt.h"
+#include "balk.h"
 #include <string>
 
 
@@ -52,4 +53,5 @@ public:
 	afx_msg void OnBnClickedRadio3();
 	afx_msg void OnBnClickedRadio4();
 	afx_msg void OnBnClickedButton4();
+	CEdit max_length_q;
 };

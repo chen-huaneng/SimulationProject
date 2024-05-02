@@ -1,0 +1,47 @@
+#pragma once
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class balk{
+private:
+	#define Q_LIMIT 100 /* Limit on queue length. */
+	#define BUSY 1      /* Mnemonics for server's being busy */
+	#define IDLE 0      /* and idle. */
+
+	int q_limit; // 用于队列长度的限制
+
+	int next_event_type, num_custs_delayed, num_events, num_in_q, server_status;
+	float area_num_in_q, area_server_status, mean_interarrival, mean_service,
+		sim_time, time_arrival[Q_LIMIT + 1], time_end, time_last_event,
+		time_next_event[4], total_of_delays;
+
+	vector<float> results; // 用于存储结果
+
+	float total_num_in_system; // 用于累积系统中的人数
+	float total_time_in_system; // 用于累积系统中的总时间
+	int max_queue_length; // 用于记录最大队列长度
+	float max_delay = 0.0; // 在全局定义中添加最大延迟变量
+	float max_time_in_system; // 最大系统时间
+
+	/* Initialize the count for customers delayed over 1 minute. */
+	int num_custs_delayed_over_1_min = 0;
+
+	int num_custs_balked; //用于跟踪离开的顾客数
+
+public:
+
+	vector<float> mm1Balk(float m_l, float m_s, float open_time, float close_time, int max_length);
+	void initialize();
+	int timing();
+	int arrive();
+	void depart();
+	void report();
+	void update_time_avg_stats();
+	float expon(float mean);
+};

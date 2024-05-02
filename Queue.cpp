@@ -30,6 +30,7 @@ void Queue::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT8, output);
 	DDX_Control(pDX, IDC_EDIT10, openTime);
 	DDX_Control(pDX, IDC_EDIT11, closeTime);
+	DDX_Control(pDX, IDC_EDIT9, max_length_q);
 }
 
 
@@ -146,7 +147,7 @@ void Queue::OnBnClickedButton6()
 
     // 判断哪一个单选按钮是选中的
 	switch (m_nSelectRadio) {
-	case IDC_RADIO1:
+	case IDC_RADIO1: // Fixed Customers
 	{
 		CString num_delays_required;
 		GetDlgItemText(IDC_EDIT3, num_delays_required);
@@ -160,7 +161,8 @@ void Queue::OnBnClickedButton6()
 		}
 		break;
 	}
-	case IDC_RADIO2:
+	case IDC_RADIO3: // Limited Service Time
+	case IDC_RADIO2: // Fixed Time
 	{
 		// 获取编辑框中的值
 		CString open_time_value;
@@ -180,12 +182,27 @@ void Queue::OnBnClickedButton6()
 		}
 		break;
 	}
-	case IDC_RADIO3:
+	case IDC_RADIO4: // Limited Queue Length
 	{
-		break;
-	}
-	case IDC_RADIO4:
-	{
+		// 获取编辑框中的值
+		CString max_length;
+		GetDlgItemText(IDC_EDIT10, max_length);
+		CString open_time_value;
+		GetDlgItemText(IDC_EDIT10, open_time_value);
+		CString close_time_value;
+		GetDlgItemText(IDC_EDIT11, close_time_value);
+
+		// 将CString转换为float
+		float o_t = _ttof(open_time_value);
+		float c_t = _ttof(close_time_value);
+		int max_length_int = _ttoi(max_length);
+
+		balk m;
+		for (int i = rowCount; i < replication_int + rowCount; i++)
+		{
+			vector<float> results = m.mm1Balk(mean_interarrival_float, mean_service_float, o_t, c_t, max_length_int);
+			ShowResultsInListCtrl(list, results, i);
+		}
 		break;
 	}
 	}
@@ -220,6 +237,7 @@ void Queue::InitListControls(CListCtrl& list) {
 	list.InsertColumn(col++, _T("Maximum delay in queue"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Maximum time in the system"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Proportion of customers delay in queue in excess of 1 minute"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Balk of customers"), LVCFMT_LEFT, 100);
 	
 	// 设置列宽
 	CHeaderCtrl* pHdrCtrl = list.GetHeaderCtrl();
@@ -270,6 +288,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	SetDlgItemText(IDC_EDIT5, _T("0"));
 	SetDlgItemText(IDC_EDIT6, _T("5"));
 	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
+	SetDlgItemText(IDC_EDIT9, _T("100"));
 	SetDlgItemText(IDC_EDIT10, _T("9"));
 	SetDlgItemText(IDC_EDIT11, _T("17"));
 	
@@ -278,6 +297,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	// 设置编辑控件为只读
 	openTime.SetReadOnly(TRUE);
 	closeTime.SetReadOnly(TRUE);
+	max_length_q.SetReadOnly(TRUE);
 }
 
 
@@ -307,6 +327,7 @@ void Queue::OnBnClickedRadio1()
 	// 设置编辑控件为只读
 	openTime.SetReadOnly(TRUE);
 	closeTime.SetReadOnly(TRUE);
+	max_length_q.SetReadOnly(TRUE);
 }
 
 
@@ -315,6 +336,7 @@ void Queue::OnBnClickedRadio2()
 	// 设置编辑控件为可编辑
 	openTime.SetReadOnly(FALSE);
 	closeTime.SetReadOnly(FALSE);
+	max_length_q.SetReadOnly(TRUE);
 }
 
 
@@ -323,14 +345,16 @@ void Queue::OnBnClickedRadio3()
 	// 设置编辑控件为只读
 	openTime.SetReadOnly(TRUE);
 	closeTime.SetReadOnly(TRUE);
+	max_length_q.SetReadOnly(TRUE);
 }
 
 
 void Queue::OnBnClickedRadio4()
 {
-	// 设置编辑控件为只读
-	openTime.SetReadOnly(TRUE);
-	closeTime.SetReadOnly(TRUE);
+	// 设置编辑控件为可编辑
+	openTime.SetReadOnly(FALSE);
+	closeTime.SetReadOnly(FALSE);
+	max_length_q.SetReadOnly(FALSE);
 }
 
 
@@ -344,6 +368,7 @@ void Queue::OnBnClickedButton4()
 	SetDlgItemText(IDC_EDIT5, _T("0"));
 	SetDlgItemText(IDC_EDIT6, _T("5"));
 	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
+	SetDlgItemText(IDC_EDIT9, _T("100"));
 	SetDlgItemText(IDC_EDIT10, _T("9"));
 	SetDlgItemText(IDC_EDIT11, _T("17"));
 	
