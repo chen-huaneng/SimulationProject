@@ -8,7 +8,9 @@ int next_event_type, num_custs_delayed, num_delays_required, num_events,
 float area_num_in_q, area_server_status, mean_interarrival, mean_service,
     sim_time, time_arrival[Q_LIMIT + 1], time_last_event, time_next_event[3],
     total_of_delays;
-vector<float> results;
+
+vector<float> results; // 用于存储结果
+
 float total_num_in_system; // 用于累积系统中的人数
 float total_time_in_system; // 用于累积系统中的总时间
 int max_queue_length; // 用于记录最大队列长度
@@ -86,6 +88,7 @@ void initialize(void) /* Initialization function. */
     server_status = IDLE;
     num_in_q = 0;
     time_last_event = 0.0;
+
     max_queue_length = 0; // 初始化最大队列长度
     max_delay = 0.0;    // 初始化最大延迟变量
     max_time_in_system = 0.0; // 初始化最大系统时间
@@ -96,8 +99,10 @@ void initialize(void) /* Initialization function. */
     total_of_delays = 0.0;
     area_num_in_q = 0.0;
     area_server_status = 0.0;
+
     total_num_in_system = 0.0; // 初始化系统中的人数
     total_time_in_system = 0.0; // 初始化系统中的总时间
+	num_custs_delayed_over_1_min = 0; // 初始化计数器
 
     /* Initialize event list.  Since no customers are present, the departure
        (service completion) event is eliminated from consideration. */
@@ -182,7 +187,6 @@ int arrive(void) /* Arrival event function. */
            arriving customer at the (new) end of time_arrival. */
 
         time_arrival[num_in_q] = sim_time;
-        return 0;
     } else {
         /* Server is idle, so arriving customer has a delay of zero.  (The
            following two statements are for program clarity and do not affect
@@ -190,11 +194,6 @@ int arrive(void) /* Arrival event function. */
 
         delay = 0.0;
         total_of_delays += delay;
-
-        // 如果顾客延迟时间超过一分钟
-		if (delay > 1.0) {
-			++num_custs_delayed_over_1_min;
-		}
 
         /* Increment the number of customers delayed, and make server busy. */
 
@@ -207,10 +206,17 @@ int arrive(void) /* Arrival event function. */
             max_delay = delay;
         }
 
+        // 如果顾客延迟时间超过一分钟
+		if (delay > 1.0) {
+			++num_custs_delayed_over_1_min;
+		}
+        delay = 0.0;
+
         /* Schedule a departure (service completion). */
 
         time_next_event[2] = sim_time + expon(mean_service);
     }
+	return 0;
 }
 
 void depart(void) /* Departure event function. */
@@ -242,16 +248,15 @@ void depart(void) /* Departure event function. */
         delay = sim_time - time_arrival[1];
         total_of_delays += delay;
 
+		 // 在顾客离开时计算延迟并更新最大延迟变量
+        if (delay > max_delay) {
+            max_delay = delay;
+        }
+
         /* Increment the number of customers delayed, and schedule departure. */
 
         ++num_custs_delayed;
         time_next_event[2] = sim_time + expon(mean_service);
-        
-		 // 在顾客离开时计算延迟并更新最大延迟变量
-        delay = sim_time - time_arrival[1];
-        if (delay > max_delay) {
-            max_delay = delay;
-        }
 
         /* Move each customer in queue (if any) up one place. */
 

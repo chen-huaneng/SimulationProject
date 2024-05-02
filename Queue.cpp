@@ -163,7 +163,7 @@ void Queue::InitListControls(CListCtrl& list) {
 	//list.InsertColumn(col++, _T("Mean service time"), LVCFMT_LEFT, 100);
 	//list.InsertColumn(col++, _T("Number of customers"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Average delay in queue"), LVCFMT_LEFT, 100);
-	list.InsertColumn(col++, _T("Average number	in queue"), LVCFMT_LEFT, 100);
+	list.InsertColumn(col++, _T("Average number in queue"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Service utilization"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Time simulation ended"), LVCFMT_LEFT, 100);
 
