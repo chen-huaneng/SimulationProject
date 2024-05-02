@@ -1,9 +1,9 @@
 /* External definitions for single-server queueing system. */
 #include "pch.h"
-#include "mm1.h"
+#include "mm1alt.h"
 #include "lcgrand.h" /* Header file for random-number generator. */
 
-vector<float> mm1::mm1function(float m_l, float m_s, int n_d_r) /* Main function. */
+vector<float> mm1alt::mm1Alt(float m_l, float m_s, int n_d_r, float open_time, float close_time) /* Main function. */
 {
     /* Specify the number of events for the timing function. */
 
@@ -17,7 +17,7 @@ vector<float> mm1::mm1function(float m_l, float m_s, int n_d_r) /* Main function
 
     /* Initialize the simulation. */
 
-    initialize();
+    initializeAlt(open_time * 60, close_time * 60);
 
     /* Run the simulation while more delays are still needed. */
 
@@ -55,7 +55,7 @@ vector<float> mm1::mm1function(float m_l, float m_s, int n_d_r) /* Main function
     return results;
 }
 
-void mm1::initialize(void) /* Initialization function. */
+void mm1alt::initializeAlt(float open_time, float close_time) /* Initialization function. */
 {
 	/* Initialize the results vector. */
 
@@ -90,10 +90,10 @@ void mm1::initialize(void) /* Initialization function. */
        (service completion) event is eliminated from consideration. */
 
     time_next_event[1] = sim_time + expon(mean_interarrival);
-    time_next_event[2] = 1.0e+30;
+    time_next_event[2] = (close_time - open_time);
 }
 
-int mm1::timing(void) /* Timing function. */
+int mm1alt::timing(void) /* Timing function. */
 {
     int i;
     float min_time_next_event = 1.0e+29;
@@ -131,7 +131,7 @@ int mm1::timing(void) /* Timing function. */
     return 0;
 }
 
-int mm1::arrive(void) /* Arrival event function. */
+int mm1alt::arrive(void) /* Arrival event function. */
 {
     float delay;
 
@@ -201,7 +201,7 @@ int mm1::arrive(void) /* Arrival event function. */
 	return 0;
 }
 
-void mm1::depart(void) /* Departure event function. */
+void mm1alt::depart(void) /* Departure event function. */
 {
     int i;
     float delay;
@@ -248,7 +248,7 @@ void mm1::depart(void) /* Departure event function. */
     }
 }
 
-void mm1::report(void) /* Report generator function. */
+void mm1alt::report(void) /* Report generator function. */
 {
     /* Compute and write estimates of desired measures of performance. */
 	//results.push_back(mean_interarrival);
@@ -270,7 +270,7 @@ void mm1::report(void) /* Report generator function. */
 	results.push_back(proportion_delayed_over_1_min);
 }
 
-void mm1::update_time_avg_stats(void) /* Update area accumulators for time-average
+void mm1alt::update_time_avg_stats(void) /* Update area accumulators for time-average
                                     statistics. */
 {
     float time_since_last_event;
@@ -292,11 +292,4 @@ void mm1::update_time_avg_stats(void) /* Update area accumulators for time-avera
     total_num_in_system += (num_in_q + server_status) * time_since_last_event;
 	// 更新系统中的总时间
     total_time_in_system += (num_in_q + server_status) * time_since_last_event;
-}
-
-float mm1::expon(float mean) /* Exponential variate generation function. */
-{
-    /* Return an exponential random variate with mean "mean". */
-
-    return -mean * log(lcgrand(1));
 }

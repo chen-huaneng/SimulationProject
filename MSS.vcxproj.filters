@@ -45,6 +45,9 @@
     <ClInclude Include="mm1.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="mm1alt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MSS.cpp">
@@ -66,6 +69,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="lcgrand.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mm1alt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

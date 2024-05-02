@@ -5,10 +5,11 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
+#include "mm1.h"
 
 using namespace std;
 
-class mm1 {
+class mm1alt : public mm1{
 private:
 	#define Q_LIMIT 100 /* Limit on queue length. */
 	#define BUSY 1      /* Mnemonics for server's being busy */
@@ -33,12 +34,12 @@ private:
 	int num_custs_delayed_over_1_min = 0;
 
 public:
-	vector<float> mm1function(float mean_interarrival, float mean_service, int num_delays_required);
-	void initialize();
+
+	vector<float> mm1Alt(float m_l, float m_s, int n_d_r, float open_time, float close_time);
+	void initializeAlt(float open_time, float close_time);
 	int timing();
 	int arrive();
 	void depart();
 	void report();
 	void update_time_avg_stats();
-	float expon(float mean);
 };

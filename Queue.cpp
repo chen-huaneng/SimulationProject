@@ -130,13 +130,14 @@ void Queue::OnBnClickedButton6()
     // 判断哪一个单选按钮是选中的
     if (radio1State == BST_CHECKED)
     {
+		mm1 m;
 		CString num_delays_required;
 		GetDlgItemText(IDC_EDIT3, num_delays_required);
 		int num_delays_required_float = _ttoi(num_delays_required);
 		
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
-			vector<float> results = mm1(mean_interarrival_float, mean_service_float, num_delays_required_float);
+			vector<float> results = m.mm1function(mean_interarrival_float, mean_service_float, num_delays_required_float);
 			ShowResultsInListCtrl(list, results, i);
 		}
     }

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "afxdialogex.h"
 #include "mm1.h"
-//#include "mm1alt.h"
+#include "mm1alt.h"
 #include <string>
 
 
