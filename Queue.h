@@ -45,7 +45,6 @@ public:
 	CEdit output;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton3();
-	afx_msg void OnBnClickedButton2();
 	CEdit openTime;
 	CEdit closeTime;
 	afx_msg void OnBnClickedRadio2();
@@ -54,4 +53,8 @@ public:
 	afx_msg void OnBnClickedRadio4();
 	afx_msg void OnBnClickedButton4();
 	CEdit max_length_q;
+	CEdit length_simulation;
+
+	afx_msg void OnEnChangeEdit11();
+	afx_msg void OnEnChangeEdit10();
 };

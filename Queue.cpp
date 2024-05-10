@@ -31,6 +31,7 @@ void Queue::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT10, openTime);
 	DDX_Control(pDX, IDC_EDIT11, closeTime);
 	DDX_Control(pDX, IDC_EDIT9, max_length_q);
+	DDX_Control(pDX, IDC_EDIT4, length_simulation);
 }
 
 
@@ -46,6 +47,8 @@ BEGIN_MESSAGE_MAP(Queue, CDialogEx)
 	ON_BN_CLICKED(IDC_RADIO3, &Queue::OnBnClickedRadio3)
 	ON_BN_CLICKED(IDC_RADIO4, &Queue::OnBnClickedRadio4)
 	ON_BN_CLICKED(IDC_BUTTON4, &Queue::OnBnClickedButton4)
+	ON_EN_CHANGE(IDC_EDIT11, &Queue::OnEnChangeEdit11)
+	ON_EN_CHANGE(IDC_EDIT10, &Queue::OnEnChangeEdit10)
 END_MESSAGE_MAP()
 
 
@@ -161,7 +164,6 @@ void Queue::OnBnClickedButton6()
 		}
 		break;
 	}
-	case IDC_RADIO3: // Limited Service Time
 	case IDC_RADIO2: // Fixed Time
 	{
 		// 获取编辑框中的值
@@ -173,11 +175,29 @@ void Queue::OnBnClickedButton6()
 		// 将CString转换为float
 		float o_t = _ttof(open_time_value);
 		float c_t = _ttof(close_time_value);
+		float time_simulation_ended = (c_t - o_t) * 60;
 
 		mm1alt m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
-			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, o_t, c_t);
+			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, time_simulation_ended);
+			ShowResultsInListCtrl(list, results, i);
+		}
+		break;
+	}
+	case IDC_RADIO3: // Limited Service Time
+	{
+		// 获取编辑框中的值
+		CString time_simulation_ended;
+		GetDlgItemText(IDC_EDIT4, time_simulation_ended);
+
+		// 将CString转换为float
+		float t_e = _ttof(time_simulation_ended);
+
+		mm1alt m;
+		for (int i = rowCount; i < replication_int + rowCount; i++)
+		{
+			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, t_e);
 			ShowResultsInListCtrl(list, results, i);
 		}
 		break;
@@ -284,7 +304,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	SetDlgItemText(IDC_EDIT1, _T("1.0"));
 	SetDlgItemText(IDC_EDIT2, _T("0.5"));
 	SetDlgItemText(IDC_EDIT3, _T("1000"));
-	SetDlgItemText(IDC_EDIT4, _T("0"));
+	SetDlgItemText(IDC_EDIT4, _T("480"));
 	SetDlgItemText(IDC_EDIT5, _T("0"));
 	SetDlgItemText(IDC_EDIT6, _T("5"));
 	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
@@ -298,6 +318,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	openTime.SetReadOnly(TRUE);
 	closeTime.SetReadOnly(TRUE);
 	max_length_q.SetReadOnly(TRUE);
+	length_simulation.SetReadOnly(TRUE);
 }
 
 
@@ -328,6 +349,7 @@ void Queue::OnBnClickedRadio1()
 	openTime.SetReadOnly(TRUE);
 	closeTime.SetReadOnly(TRUE);
 	max_length_q.SetReadOnly(TRUE);
+	length_simulation.SetReadOnly(TRUE);
 }
 
 
@@ -337,6 +359,7 @@ void Queue::OnBnClickedRadio2()
 	openTime.SetReadOnly(FALSE);
 	closeTime.SetReadOnly(FALSE);
 	max_length_q.SetReadOnly(TRUE);
+	length_simulation.SetReadOnly(TRUE);
 }
 
 
@@ -346,6 +369,7 @@ void Queue::OnBnClickedRadio3()
 	openTime.SetReadOnly(TRUE);
 	closeTime.SetReadOnly(TRUE);
 	max_length_q.SetReadOnly(TRUE);
+	length_simulation.SetReadOnly(FALSE);
 }
 
 
@@ -355,24 +379,32 @@ void Queue::OnBnClickedRadio4()
 	openTime.SetReadOnly(FALSE);
 	closeTime.SetReadOnly(FALSE);
 	max_length_q.SetReadOnly(FALSE);
+	length_simulation.SetReadOnly(TRUE);
 }
 
 
 void Queue::OnBnClickedButton4()
 {
-	// 初始化编辑框的值
-	SetDlgItemText(IDC_EDIT1, _T("1.0"));
-	SetDlgItemText(IDC_EDIT2, _T("0.5"));
-	SetDlgItemText(IDC_EDIT3, _T("1000"));
-	SetDlgItemText(IDC_EDIT4, _T("0"));
-	SetDlgItemText(IDC_EDIT5, _T("0"));
-	SetDlgItemText(IDC_EDIT6, _T("5"));
-	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
-	SetDlgItemText(IDC_EDIT9, _T("100"));
-	SetDlgItemText(IDC_EDIT10, _T("9"));
-	SetDlgItemText(IDC_EDIT11, _T("17"));
+	//// 初始化编辑框的值
+	//SetDlgItemText(IDC_EDIT1, _T("1.0"));
+	//SetDlgItemText(IDC_EDIT2, _T("0.5"));
+	//SetDlgItemText(IDC_EDIT3, _T("1000"));
+	//SetDlgItemText(IDC_EDIT4, _T("480"));
+	//SetDlgItemText(IDC_EDIT5, _T("0"));
+	//SetDlgItemText(IDC_EDIT6, _T("5"));
+	//SetDlgItemText(IDC_EDIT7, _T("1973272912"));
+	//SetDlgItemText(IDC_EDIT9, _T("100"));
+	//SetDlgItemText(IDC_EDIT10, _T("9"));
+	//SetDlgItemText(IDC_EDIT11, _T("17"));
+
+	//seed = "1973272912"; // 默认种子值
+
+	// 获取种子值
+	GetDlgItemText(IDC_EDIT7, seed);
+	CWnd* pEditCtrl1 = GetDlgItem(IDC_EDIT7); // 获取编辑框的指针
+	long seed_long = _wtol(seed);
 	
-	seed = "1973272912"; // 默认种子值
+	lcgrandst(seed_long, 1);
 }
 
 
@@ -397,4 +429,36 @@ void Queue::UpdateColumn(CDialogEx* pParentDlg) {
 
 	// 调用SetColumn函数设置新的列名
 	list.SetColumn(4, &column);
+}
+
+
+void Queue::OnEnChangeEdit11()
+{
+	CString strEdit10;
+	GetDlgItemText(IDC_EDIT10, strEdit10);
+	
+	CString strEdit11;
+	GetDlgItemText(IDC_EDIT11, strEdit11);
+
+	float tmp = (_ttof(strEdit11) - _ttof(strEdit10)) * 60;
+
+	CString strEdit4;
+	strEdit4.Format(_T("%f"), tmp);
+	SetDlgItemText(IDC_EDIT4, strEdit4);
+}
+
+
+void Queue::OnEnChangeEdit10()
+{
+	CString strEdit10;
+	GetDlgItemText(IDC_EDIT10, strEdit10);
+	
+	CString strEdit11;
+	GetDlgItemText(IDC_EDIT11, strEdit11);
+
+	float tmp = (_ttof(strEdit11) - _ttof(strEdit10)) * 60;
+
+	CString strEdit4;
+	strEdit4.Format(_T("%f"), tmp);
+	SetDlgItemText(IDC_EDIT4, strEdit4);
 }

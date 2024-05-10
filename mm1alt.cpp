@@ -3,7 +3,7 @@
 #include "mm1alt.h"
 #include "lcgrand.h" /* Header file for random-number generator. */
 
-vector<float> mm1alt::mm1Alt(float m_l, float m_s, float open_time, float close_time) /* Main function. */
+vector<float> mm1alt::mm1Alt(float m_l, float m_s, float t_e) /* Main function. */
 {
     /* Specify the number of events for the timing function. */
     
@@ -13,7 +13,7 @@ vector<float> mm1alt::mm1Alt(float m_l, float m_s, float open_time, float close_
 
 	mean_interarrival = m_l;
 	mean_service = m_s;
-    time_end = (close_time - open_time) * 60;
+    time_end = t_e;
 
     /* Initialize the simulation. */
 

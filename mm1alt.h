@@ -32,7 +32,7 @@ private:
 
 public:
 
-	vector<float> mm1Alt(float m_l, float m_s, float open_time, float close_time);
+	vector<float> mm1Alt(float m_l, float m_s, float t_e);
 	void initialize();
 	int timing();
 	int arrive();
