@@ -3,7 +3,7 @@
 #include "mm1.h"
 #include "lcgrand.h" /* Header file for random-number generator. */
 
-vector<float> mm1::mm1function(float m_l, float m_s, int n_d_r) /* Main function. */
+vector<float> mm1::mm1function(float m_l, float m_s, int n_d_r, float d_e) /* Main function. */
 {
     /* Specify the number of events for the timing function. */
 
@@ -14,6 +14,7 @@ vector<float> mm1::mm1function(float m_l, float m_s, int n_d_r) /* Main function
 	mean_interarrival = m_l;
 	mean_service = m_s;
 	num_delays_required = n_d_r;
+	delay_excess = d_e;
 
     /* Initialize the simulation. */
 
@@ -189,7 +190,7 @@ int mm1::arrive(void) /* Arrival event function. */
         }
 
         // 如果顾客延迟时间超过一分钟
-		if (delay > 1.0) {
+		if (delay > delay_excess) {
 			++num_custs_delayed_over_1_min;
 		}
         delay = 0.0;

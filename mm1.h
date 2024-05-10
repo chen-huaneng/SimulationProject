@@ -27,12 +27,13 @@ private:
 	int max_queue_length; // 用于记录最大队列长度
 	float max_delay = 0.0; // 在全局定义中添加最大延迟变量
 	float max_time_in_system; // 最大系统时间
+	float delay_excess; // 用于记录延迟超过的时间
 
 	/* Initialize the count for customers delayed over 1 minute. */
 	int num_custs_delayed_over_1_min = 0;
 
 public:
-	vector<float> mm1function(float mean_interarrival, float mean_service, int num_delays_required);
+	vector<float> mm1function(float mean_interarrival, float mean_service, int num_delays_required, float delay_excess);
 	void initialize();
 	int timing();
 	int arrive();

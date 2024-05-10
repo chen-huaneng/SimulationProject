@@ -3,7 +3,7 @@
 #include "balk.h"
 #include "lcgrand.h" /* Header file for random-number generator. */
 
-vector<float> balk::mm1Balk(float m_l, float m_s, float open_time, float close_time, int max_length) /* Main function. */
+vector<float> balk::mm1Balk(float m_l, float m_s, float open_time, float close_time, int max_length, float d_e) /* Main function. */
 {
     /* Specify the number of events for the timing function. */
     
@@ -15,6 +15,7 @@ vector<float> balk::mm1Balk(float m_l, float m_s, float open_time, float close_t
 	mean_service = m_s;
     time_end = (close_time - open_time) * 60;
 	q_limit = max_length;
+	delay_excess = d_e;
 
     /* Initialize the simulation. */
 
@@ -206,7 +207,7 @@ int balk::arrive(void) /* Arrival event function. */
         }
 
         // 如果顾客延迟时间超过一分钟
-		if (delay > 1.0) {
+		if (delay > delay_excess) {
 			++num_custs_delayed_over_1_min;
 		}
         delay = 0.0;

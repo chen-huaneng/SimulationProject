@@ -125,6 +125,8 @@ void Queue::OnBnClickedButton6()
 	GetDlgItemText(IDC_EDIT2, mean_service);
 	CString replication;
 	GetDlgItemText(IDC_EDIT6, replication);
+	CString delay;
+	GetDlgItemText(IDC_EDIT5, delay);
 
 	// 获取编辑控件的指针
 	CString strTemp;
@@ -144,6 +146,10 @@ void Queue::OnBnClickedButton6()
 	int replication_int = _ttoi(replication);
 	float mean_interarrival_float = _ttof(mean_interarrival);
 	float mean_service_float = _ttof(mean_service);
+	float delay_excess = _ttof(delay);
+
+	// 更新延迟列的标题
+	UpdateColumnDelay(this, delay_excess);
 
 	// 获取列表控件的行数
 	rowCount = list.GetItemCount();
@@ -159,7 +165,7 @@ void Queue::OnBnClickedButton6()
 		mm1 m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
-			vector<float> results = m.mm1function(mean_interarrival_float, mean_service_float, num_delays_required_float);
+			vector<float> results = m.mm1function(mean_interarrival_float, mean_service_float, num_delays_required_float, delay_excess);
 			ShowResultsInListCtrl(list, results, i);
 		}
 		break;
@@ -180,7 +186,7 @@ void Queue::OnBnClickedButton6()
 		mm1alt m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
-			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, time_simulation_ended);
+			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, time_simulation_ended, delay_excess);
 			ShowResultsInListCtrl(list, results, i);
 		}
 		break;
@@ -197,7 +203,7 @@ void Queue::OnBnClickedButton6()
 		mm1alt m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
-			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, t_e);
+			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, t_e, delay_excess);
 			ShowResultsInListCtrl(list, results, i);
 		}
 		break;
@@ -220,7 +226,7 @@ void Queue::OnBnClickedButton6()
 		balk m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
-			vector<float> results = m.mm1Balk(mean_interarrival_float, mean_service_float, o_t, c_t, max_length_int);
+			vector<float> results = m.mm1Balk(mean_interarrival_float, mean_service_float, o_t, c_t, max_length_int, delay_excess);
 			ShowResultsInListCtrl(list, results, i);
 		}
 		break;
@@ -305,7 +311,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	SetDlgItemText(IDC_EDIT2, _T("0.5"));
 	SetDlgItemText(IDC_EDIT3, _T("1000"));
 	SetDlgItemText(IDC_EDIT4, _T("480"));
-	SetDlgItemText(IDC_EDIT5, _T("0"));
+	SetDlgItemText(IDC_EDIT5, _T("1"));
 	SetDlgItemText(IDC_EDIT6, _T("5"));
 	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
 	SetDlgItemText(IDC_EDIT9, _T("100"));
@@ -390,7 +396,7 @@ void Queue::OnBnClickedButton4()
 	//SetDlgItemText(IDC_EDIT2, _T("0.5"));
 	//SetDlgItemText(IDC_EDIT3, _T("1000"));
 	//SetDlgItemText(IDC_EDIT4, _T("480"));
-	//SetDlgItemText(IDC_EDIT5, _T("0"));
+	//SetDlgItemText(IDC_EDIT5, _T("1"));
 	//SetDlgItemText(IDC_EDIT6, _T("5"));
 	//SetDlgItemText(IDC_EDIT7, _T("1973272912"));
 	//SetDlgItemText(IDC_EDIT9, _T("100"));
@@ -461,4 +467,23 @@ void Queue::OnEnChangeEdit10()
 	CString strEdit4;
 	strEdit4.Format(_T("%f"), tmp);
 	SetDlgItemText(IDC_EDIT4, strEdit4);
+}
+
+void Queue::UpdateColumnDelay(CDialogEx* pDarentDlg, float delay_excess) {
+	int colIndex = 10; // 你要更改的列的索引
+
+	CString columnName;
+	columnName.Format(_T("Proportion of customers delay in queue in excess of %f minute"), delay_excess);
+
+	CHeaderCtrl* pHdrCtrl = list.GetHeaderCtrl();
+
+	if (pHdrCtrl) {
+		// 设置列标题
+		HDITEM hdItem;
+		hdItem.mask = HDI_TEXT;
+		hdItem.pszText = (LPTSTR)(LPCTSTR)columnName;
+		pHdrCtrl->SetItem(colIndex, &hdItem);
+	}
+
+
 }

@@ -34,9 +34,11 @@ private:
 
 	int num_custs_balked; //用于跟踪离开的顾客数
 
+	float delay_excess; // 用于跟踪延迟超额
+
 public:
 
-	vector<float> mm1Balk(float m_l, float m_s, float open_time, float close_time, int max_length);
+	vector<float> mm1Balk(float m_l, float m_s, float open_time, float close_time, int max_length, float delay_excess);
 	void initialize();
 	int timing();
 	int arrive();
