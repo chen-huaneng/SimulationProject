@@ -470,7 +470,7 @@ void Queue::OnEnChangeEdit10()
 }
 
 void Queue::UpdateColumnDelay(CDialogEx* pDarentDlg, float delay_excess) {
-	int colIndex = 10; // 你要更改的列的索引
+	int colIndex = 10; // 更改的列的索引
 
 	CString columnName;
 	columnName.Format(_T("Proportion of customers delay in queue in excess of %f minute"), delay_excess);
@@ -484,6 +484,4 @@ void Queue::UpdateColumnDelay(CDialogEx* pDarentDlg, float delay_excess) {
 		hdItem.pszText = (LPTSTR)(LPCTSTR)columnName;
 		pHdrCtrl->SetItem(colIndex, &hdItem);
 	}
-
-
 }
