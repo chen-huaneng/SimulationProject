@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="balk.h" />
+    <ClInclude Include="CInventory.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="lcgrand.h" />
@@ -198,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="balk.cpp" />
+    <ClCompile Include="CInventory.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="lcgrand.cpp" />
     <ClCompile Include="mm1.cpp" />
