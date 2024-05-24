@@ -24,6 +24,10 @@ public:
 private:
 	int m_nSelectRadio; // 用于跟踪当前选中的单选按钮
 	int rowCount; // 用于跟踪列表控件的行数
+	vector<float> CalculateMean(const vector<vector<float>>& allResults);
+	vector<float> CalculateVariance(const vector<vector<float>>& allResults, const vector<float>& means);
+	void Queue::ShowSpecialResultsInListCtrl(CListCtrl& list, vector<float> results, CString label);
+	vector<vector<float>> allResults;
 	CString seed; // 用于存储种子
 
 protected:

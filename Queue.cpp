@@ -85,6 +85,7 @@ BOOL Queue::OnInitDialog()
 	//{
 	//// freopen_s 失败的处理逻辑
 	//}
+	allResults.clear();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -232,6 +233,16 @@ void Queue::OnBnClickedButton6()
 		break;
 	}
 	}
+
+	// 计算均值和方差
+	vector<float> means = CalculateMean(allResults);
+	vector<float> variances = CalculateVariance(allResults, means);
+
+	// 插入均值行
+	ShowSpecialResultsInListCtrl(list, means, _T("mean"));
+
+	// 插入方差行
+	ShowSpecialResultsInListCtrl(list, variances, _T("variance"));
 }
 
 
@@ -276,6 +287,25 @@ void Queue::InitListControls(CListCtrl& list) {
 }
 
 
+//void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int column) {
+//	// 插入一行
+//	CString col;
+//	col.Format(_T("%d"), column);
+//	list.InsertItem(column, col);
+//
+//	// 设置第一列的值
+//	CString strReplication;
+//	strReplication.Format(_T("%d"), column + 1);
+//	list.SetItemText(column, 0, strReplication);
+//
+//	// 设置其他列的值
+//	for (int i = 0; i < results.size(); i++) {
+//		CString strResult;
+//		strResult.Format(_T("%f"), results[i]);
+//		list.SetItemText(column, i + 1, strResult);
+//	}
+//}
+
 void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int column) {
 	// 插入一行
 	CString col;
@@ -293,6 +323,9 @@ void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int co
 		strResult.Format(_T("%f"), results[i]);
 		list.SetItemText(column, i + 1, strResult);
 	}
+
+	// 将结果保存到 allResults 中
+	allResults.push_back(results);
 }
 
 
@@ -303,6 +336,9 @@ void Queue::OnBnClickedButton5()
 
 	// 清空编辑控件
 	SetDlgItemText(IDC_EDIT8, _T(""));
+
+	// 清空 allResults
+	allResults.clear();
 }
 
 void Queue::InitValues(CDialogEx* pParentDlg) {
@@ -483,5 +519,47 @@ void Queue::UpdateColumnDelay(CDialogEx* pDarentDlg, float delay_excess) {
 		hdItem.mask = HDI_TEXT;
 		hdItem.pszText = (LPTSTR)(LPCTSTR)columnName;
 		pHdrCtrl->SetItem(colIndex, &hdItem);
+	}
+}
+
+vector<float> Queue::CalculateMean(const vector<vector<float>>& allResults) {
+	vector<float> means;
+	int numItems = allResults.size();
+	int numCols = allResults[0].size();
+
+	for (int col = 0; col < numCols; ++col) {
+		float sum = 0.0;
+		for (int row = 0; row < numItems; ++row) {
+			sum += allResults[row][col];
+		}
+		means.push_back(sum / numItems);
+	}
+	return means;
+}
+
+vector<float> Queue::CalculateVariance(const vector<vector<float>>& allResults, const vector<float>& means) {
+	vector<float> variances;
+	int numItems = allResults.size();
+	int numCols = allResults[0].size();
+
+	for (int col = 0; col < numCols; ++col) {
+		float sum = 0.0;
+		for (int row = 0; row < numItems; ++row) {
+			sum += pow(allResults[row][col] - means[col], 2);
+		}
+		variances.push_back(sum / numItems);
+	}
+	return variances;
+}
+
+
+void Queue::ShowSpecialResultsInListCtrl(CListCtrl& list, vector<float> results, CString label) {
+	int column = list.GetItemCount();
+	list.InsertItem(column, label);
+
+	for (int i = 0; i < results.size(); i++) {
+		CString strResult;
+		strResult.Format(_T("%f"), results[i]);
+		list.SetItemText(column, i + 1, strResult);
 	}
 }
