@@ -85,7 +85,7 @@ void mm1::initialize(void) /* Initialization function. */
 
     total_num_in_system = 0.0; // 初始化系统中的人数
     total_time_in_system = 0.0; // 初始化系统中的总时间
-	num_custs_delayed_over_1_min = 0; // 初始化计数器
+	num_custs_delayed_over_1_min = 0; // 初始化延迟超过给定时间的顾客数
 
     /* Initialize event list.  Since no customers are present, the departure
        (service completion) event is eliminated from consideration. */
@@ -219,7 +219,7 @@ void mm1::depart(void) /* Departure event function. */
         delay = sim_time - time_arrival[1];
         total_of_delays += delay;
 
-		 // 在顾客离开时计算延迟并更新最大延迟变量
+		// 在顾客离开时计算延迟并更新最大延迟变量
         if (delay > max_delay) {
             max_delay = delay;
         }
@@ -257,7 +257,7 @@ void mm1::report(void) /* Report generator function. */
     results.push_back(max_delay);    // 将最大延迟写入结果向量
     results.push_back(max_time_in_system); // 写入最大系统时间
 
-    // 计算延迟超过一分钟的顾客的比例
+    // 计算延迟超过给定时间的顾客比例
 	float proportion_delayed_over_1_min = (float)num_custs_delayed_over_1_min / num_custs_delayed;
 	results.push_back(proportion_delayed_over_1_min);
 }

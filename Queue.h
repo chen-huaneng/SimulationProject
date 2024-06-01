@@ -2,7 +2,6 @@
 #include "afxdialogex.h"
 #include "mm1.h"
 #include "mm1alt.h"
-#include "balk.h"
 #include <string>
 
 

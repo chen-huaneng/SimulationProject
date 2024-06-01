@@ -3,7 +3,7 @@
 #include "mm1alt.h"
 #include "lcgrand.h" /* Header file for random-number generator. */
 
-vector<float> mm1alt::mm1Alt(float m_l, float m_s, float t_e, float d_e) /* Main function. */
+vector<float> mm1alt::mm1Alt(float m_l, float m_s, float t_e, float d_e, int max_l, bool b_o_n) /* Main function. */
 {
     /* Specify the number of events for the timing function. */
     
@@ -15,6 +15,14 @@ vector<float> mm1alt::mm1Alt(float m_l, float m_s, float t_e, float d_e) /* Main
 	mean_service = m_s; // 平均服务时间
     time_end = t_e; // 仿真结束时间
 	delay_excess = d_e; // 延迟时间
+    balk_or_not = b_o_n; // 是否balk
+
+    if (balk_or_not == FALSE) {
+		queue_limit = Q_LIMIT; // 队列长度
+    }
+    else {
+        queue_limit = max_l; // 队列长度
+    }
 
     /* Initialize the simulation. */
 
@@ -62,19 +70,17 @@ void mm1alt::initialize() /* Initialization function. */
 {
 	/* Initialize the results vector. */
 
-    results.clear(); // 初始化结果向量
+    results.clear(); // 清空结果向量
 
     /* Initialize the simulation clock. */
 
-    sim_time = 0.0; // 初始化仿真时间
+    sim_time = 0.0; // 初始化模拟时间
 
     /* Initialize the state variables. */
 
     server_status = IDLE; // 初始化服务器状态
     num_in_q = 0; // 初始化队列中的人数
     time_last_event = 0.0; // 初始化上一个事件的时间
-
-	// 初始化系统中的人数和总时间
 
     max_queue_length = 0; // 初始化最大队列长度
     max_delay = 0.0;    // 初始化最大延迟变量
@@ -84,7 +90,7 @@ void mm1alt::initialize() /* Initialization function. */
 
     num_custs_delayed = 0; // 初始化延迟的顾客数
     total_of_delays = 0.0; // 初始化延迟总时间
-    area_num_in_q = 0.0; //
+    area_num_in_q = 0.0;
     area_server_status = 0.0;
 
 	// 初始化系统中的人数和总时间
@@ -92,6 +98,9 @@ void mm1alt::initialize() /* Initialization function. */
     total_num_in_system = 0.0; // 初始化系统中的人数
     total_time_in_system = 0.0; // 初始化系统中的总时间
 	num_custs_delayed_over_1_min = 0; // 初始化延迟超过给定时间的顾客数
+
+    // 初始化balk
+    num_custs_balked = 0;
 
     /* Initialize event list.  Since no customers are present, the departure
        (service completion) event is eliminated from consideration.  The end-
@@ -155,7 +164,18 @@ int mm1alt::arrive(void) /* Arrival event function. */
     {
         /* Server is busy, so increment number of customers in queue. */
 
-        ++num_in_q;
+        if (balk_or_not == FALSE) {
+            ++num_in_q;
+        }
+        else {
+            if (num_in_q < queue_limit) {
+                ++num_in_q;
+            }
+            else {
+                ++num_custs_balked;
+                return 0;
+            }
+        }
 
         /* Update max_queue_length if needed. */
 
@@ -267,6 +287,11 @@ void mm1alt::report(void) /* Report generator function. */
     // 计算延迟超过给定时间的顾客比例
 	float proportion_delayed_over_1_min = (float)num_custs_delayed_over_1_min / num_custs_delayed;
 	results.push_back(proportion_delayed_over_1_min);
+
+    // 计算离开的顾客数
+    if (balk_or_not == TRUE) {
+		results.push_back(num_custs_balked);
+	}
 }
 
 void mm1alt::update_time_avg_stats(void) /* Update area accumulators for time-average
@@ -288,11 +313,9 @@ void mm1alt::update_time_avg_stats(void) /* Update area accumulators for time-av
     area_server_status += server_status * time_since_last_event;
     
 	// 更新系统中的人数
-
     total_num_in_system += (num_in_q + server_status) * time_since_last_event;
 
 	// 更新系统中的总时间
-
     total_time_in_system += (num_in_q + server_status) * time_since_last_event;
 }
 

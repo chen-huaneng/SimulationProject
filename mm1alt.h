@@ -27,13 +27,16 @@ private:
 	float max_delay = 0.0; // 在全局定义中添加最大延迟变量
 	float max_time_in_system; // 最大系统时间
 	float delay_excess; // 用于记录延迟超过时间
+	bool balk_or_not; // 用于区分是否balk
+	int queue_limit; // 用于队列长度的限制
+	int num_custs_balked; // 用于跟踪离开的顾客数
 
 	/* Initialize the count for customers delayed over 1 minute. */
 	int num_custs_delayed_over_1_min = 0;
 
 public:
 
-	vector<float> mm1Alt(float m_l, float m_s, float t_e, float delay_excess);
+	vector<float> mm1Alt(float m_l, float m_s, float t_e, float delay_excess, int max_length, bool balk_or_not);
 	void initialize();
 	int timing();
 	int arrive();
