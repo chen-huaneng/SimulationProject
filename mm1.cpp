@@ -7,14 +7,14 @@ vector<float> mm1::mm1function(float m_l, float m_s, int n_d_r, float d_e) /* Ma
 {
     /* Specify the number of events for the timing function. */
 
-    num_events = 2;
+    num_events = 2; // 事件数
 
     /* Read input parameters. */
 
-	mean_interarrival = m_l;
-	mean_service = m_s;
-	num_delays_required = n_d_r;
-	delay_excess = d_e;
+	mean_interarrival = m_l; // 平均到达时间
+	mean_service = m_s; // 平均服务时间
+	num_delays_required = n_d_r; //所需要服务的顾客数
+	delay_excess = d_e; // 顾客延迟时间
 
     /* Initialize the simulation. */
 
@@ -60,17 +60,17 @@ void mm1::initialize(void) /* Initialization function. */
 {
 	/* Initialize the results vector. */
 
-    results.clear();
+    results.clear(); // 清空结果向量
 
     /* Initialize the simulation clock. */
 
-    sim_time = 0.0;
+    sim_time = 0.0; // 初始化模拟时间
 
     /* Initialize the state variables. */
 
-    server_status = IDLE;
-    num_in_q = 0;
-    time_last_event = 0.0;
+    server_status = IDLE; // 初始化服务器状态
+    num_in_q = 0; // 初始化队列中的人数
+    time_last_event = 0.0; // 初始化上一个事件的时间
 
     max_queue_length = 0; // 初始化最大队列长度
     max_delay = 0.0;    // 初始化最大延迟变量
@@ -78,8 +78,8 @@ void mm1::initialize(void) /* Initialization function. */
 
     /* Initialize the statistical counters. */
 
-    num_custs_delayed = 0;
-    total_of_delays = 0.0;
+    num_custs_delayed = 0; // 初始化延迟的顾客数
+    total_of_delays = 0.0; // 初始化延迟总时间
     area_num_in_q = 0.0;
     area_server_status = 0.0;
 
@@ -90,8 +90,8 @@ void mm1::initialize(void) /* Initialization function. */
     /* Initialize event list.  Since no customers are present, the departure
        (service completion) event is eliminated from consideration. */
 
-    time_next_event[1] = sim_time + expon(mean_interarrival);
-    time_next_event[2] = 1.0e+30;
+    time_next_event[1] = sim_time + expon(mean_interarrival); // 初始化到达事件
+    time_next_event[2] = 1.0e+30; // 初始化离开事件
 }
 
 int mm1::timing(void) /* Timing function. */
@@ -103,12 +103,13 @@ int mm1::timing(void) /* Timing function. */
 
     /* Determine the event type of the next event to occur. */
 
-    for (i = 1; i <= num_events; ++i)
+    for (i = 1; i <= num_events; ++i) {
         if (time_next_event[i] < min_time_next_event)
         {
             min_time_next_event = time_next_event[i];
             next_event_type = i;
         }
+    }
 
     /* Check to see whether the event list is empty. */
 
@@ -291,6 +292,7 @@ void mm1::update_time_avg_stats(void) /* Update area accumulators for time-avera
     
 	// 更新系统中的人数
     total_num_in_system += (num_in_q + server_status) * time_since_last_event;
+
 	// 更新系统中的总时间
     total_time_in_system += (num_in_q + server_status) * time_since_last_event;
 }

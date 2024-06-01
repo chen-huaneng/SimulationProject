@@ -99,16 +99,16 @@ BOOL Queue::OnInitDialog()
 }
 
 
-void Queue::OnBnClickedButton1()
+void Queue::OnBnClickedButton1() // 添加种子
 {
 	// 获取编辑控件的样式
     LONG style = GetWindowLong(seed_by_index.GetSafeHwnd(), GWL_STYLE);
 
-	long seed_long = 0;
+	long seed_long = 0; // 存储种子
 	CWnd* pEditCtrl;
 
     // 检查是否包含 ES_READONLY 样式
-    if (style & ES_READONLY)
+    if (style & ES_READONLY) // 直接添加种子
     {
 		// 获取种子值
 		GetDlgItemText(IDC_EDIT7, seed);
@@ -120,7 +120,7 @@ void Queue::OnBnClickedButton1()
 			lcgrandst(seed_long, 1);
 		}
 	}
-    else
+    else // 通过索引添加种子
     {
 		CString index;
 		GetDlgItemText(IDC_EDIT12, index);
@@ -130,37 +130,37 @@ void Queue::OnBnClickedButton1()
 
 		// 更改种子值
 		if (pEditCtrl != nullptr && index_num > 0 && index_num < getlength()) {
-			resetStream();
+			resetStream(); // 重置随机数流
 			seed_long = lcgrandgt(index_num);
-			seed.Format(_T("%ld"), seed_long);
+			seed.Format(_T("%ld"), seed_long); // 设置显示在编辑框中的种子值
 			lcgrandst(seed_long, 1);
 		}
 		else {
-			AfxMessageBox(_T("The index is not valid."));
+			AfxMessageBox(_T("The index is not valid.")); // 如果索引超出了随机数流的范围，则弹出消息框
 		}
     }
-	previousSeed = seed_long;
+	previousSeed = seed_long; // 保存上一次的种子值
 }
 
 
-void Queue::OnBnClickedButton3()
+void Queue::OnBnClickedButton3() // 清空种子列表
 {
 	// 清空编辑控件
 	SetDlgItemText(IDC_EDIT8, _T(""));
 }
 
 
-void Queue::OnBnClickedButton4()
+void Queue::OnBnClickedButton4() // 重置种子
 {
 	// 获取编辑控件的样式
     LONG style = GetWindowLong(seed_by_index.GetSafeHwnd(), GWL_STYLE);
 
     // 检查是否包含 ES_READONLY 样式
-    if (style & ES_READONLY)
+    if (style & ES_READONLY) // 直接重置种子
     {
 		lcgrandst(previousSeed, 1);
     }
-    else
+    else // 通过索引重置种子
     {
 		seed.Format(_T("%ld"), previousSeed);
 		resetStream();
@@ -169,7 +169,7 @@ void Queue::OnBnClickedButton4()
 }
 
 
-void Queue::OnBnClickedButton5()
+void Queue::OnBnClickedButton5() // 清空结果列表
 {
 	// 清空列表控件
 	list.DeleteAllItems();
@@ -182,7 +182,7 @@ void Queue::OnBnClickedButton5()
 }
 
 
-void Queue::OnBnClickedButton6()
+void Queue::OnBnClickedButton6() // 运行模拟
 {
 	// 暂存上一次的按钮ID
 	int tmp = m_nSelectRadio;
@@ -219,6 +219,7 @@ void Queue::OnBnClickedButton6()
 	CString delay;
 	GetDlgItemText(IDC_EDIT5, delay);
 
+	// 在列表中显示种子
 	// 获取编辑控件的指针
 	CString strTemp;
 	output.GetWindowText(strTemp);
@@ -229,7 +230,6 @@ void Queue::OnBnClickedButton6()
 	else {
 		strTemp = seed;
 	}
-
 	// 将新的文本设置到文本框中
 	output.SetWindowText(strTemp);
 
@@ -245,7 +245,7 @@ void Queue::OnBnClickedButton6()
 	// 获取列表控件的行数
 	rowCount = list.GetItemCount();
 
-    // 判断哪一个单选按钮是选中的
+    // 判断哪一个单选按钮是选中的，根据相应的单选按钮调用相应的仿真程序
 	switch (m_nSelectRadio) {
 	case IDC_RADIO1: // Fixed Customers
 	{
@@ -254,7 +254,7 @@ void Queue::OnBnClickedButton6()
 		int num_delays_required_float = _ttoi(num_delays_required);
 
 		mm1 m;
-		for (int i = rowCount; i < replication_int + rowCount; i++)
+		for (int i = rowCount; i < replication_int + rowCount; i++) // 进行多次仿真
 		{
 			vector<float> results = m.mm1function(mean_interarrival_float, mean_service_float, num_delays_required_float, delay_excess);
 			ShowResultsInListCtrl(list, results, i);
@@ -424,7 +424,7 @@ void Queue::OnEnChangeEdit11()
 }
 
 
-void Queue::UpdateColumnDelay(CDialogEx* pDarentDlg, float delay_excess) {
+void Queue::UpdateColumnDelay(CDialogEx* pDarentDlg, float delay_excess) { // 更改列名
 	int colIndex = 10; // 更改的列的索引
 
 	CString columnName;
@@ -442,7 +442,7 @@ void Queue::UpdateColumnDelay(CDialogEx* pDarentDlg, float delay_excess) {
 }
 
 
-void Queue::UpdateColumn(CDialogEx* pParentDlg) {
+void Queue::UpdateColumn(CDialogEx* pParentDlg) { // 根据单选按钮的选择更新列名
 	// 创建一个LVCOLUMNW结构，设置新的列名
 	LVCOLUMNW column;
 	column.mask = LVCF_TEXT; // 表示只设置列的文本
@@ -498,14 +498,11 @@ vector<float> Queue::CalculateVariance(const vector<vector<float>>& allResults, 
 }
 
 
-void Queue::ClearControls(CDialogEx* pParentDlg)
+void Queue::ClearControls(CDialogEx* pParentDlg) // 清空控件
 {
     // 清空列表控件
     CListCtrl* pListCtrl = (CListCtrl*)pParentDlg->GetDlgItem(IDC_LIST1);
     pListCtrl->DeleteAllItems();
-
-    // 清空编辑控件
-    //pParentDlg->GetDlgItem(IDC_EDIT8)->SetWindowText(_T(""));
 }
 
 
@@ -513,9 +510,6 @@ void Queue::InitListControls(CListCtrl& list) {
 	// 设置列表的每列
 	int col = 0;
 	list.InsertColumn(col++, _T("Replication"), LVCFMT_LEFT, 50);
-	//list.InsertColumn(col++, _T("Mean interarrival time"), LVCFMT_LEFT, 100);
-	//list.InsertColumn(col++, _T("Mean service time"), LVCFMT_LEFT, 100);
-	//list.InsertColumn(col++, _T("Number of customers"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Average delay in queue"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Average number in queue"), LVCFMT_LEFT, 100);
 	list.InsertColumn(col++, _T("Service utilization"), LVCFMT_LEFT, 100);
@@ -566,7 +560,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 }
 
 
-void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int column) {
+void Queue::ShowResultsInListCtrl(CListCtrl& list, vector<float> results, int column) { // 在列表控件中显示结果
 	// 插入一行
 	CString col;
 	col.Format(_T("%d"), column);
