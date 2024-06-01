@@ -84,14 +84,14 @@ BOOL Queue::OnInitDialog()
 	// 设置默认选中第一个单选按钮
 	((CButton*)GetDlgItem(IDC_RADIO5))->SetCheck(TRUE);
 
-	//// 为了方便调试，我们在这里打开控制台
-	//AllocConsole();
-	//// 将标准输出重定向到控制台
-	//FILE *file;
-	//if (freopen_s(&file, "CONOUT$", "w", stdout) != 0)
-	//{
-	//// freopen_s 失败的处理逻辑
-	//}
+	// 为了方便调试，我们在这里打开控制台
+	AllocConsole();
+	// 将标准输出重定向到控制台
+	FILE *file;
+	if (freopen_s(&file, "CONOUT$", "w", stdout) != 0)
+	{
+	// freopen_s 失败的处理逻辑
+	}
 	allResults.clear();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -303,7 +303,7 @@ void Queue::OnBnClickedButton6() // 运行模拟
 	{
 		// 获取编辑框中的值
 		CString max_length;
-		GetDlgItemText(IDC_EDIT10, max_length);
+		GetDlgItemText(IDC_EDIT9, max_length);
 		CString open_time_value;
 		GetDlgItemText(IDC_EDIT10, open_time_value);
 		CString close_time_value;
@@ -543,7 +543,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	SetDlgItemText(IDC_EDIT5, _T("1"));
 	SetDlgItemText(IDC_EDIT6, _T("5"));
 	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
-	SetDlgItemText(IDC_EDIT9, _T("100"));
+	SetDlgItemText(IDC_EDIT9, _T("2"));
 	SetDlgItemText(IDC_EDIT10, _T("9"));
 	SetDlgItemText(IDC_EDIT11, _T("17"));
 	SetDlgItemText(IDC_EDIT12, _T("1"));

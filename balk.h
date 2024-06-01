@@ -10,7 +10,7 @@ using namespace std;
 
 class balk{
 private:
-	#define Q_LIMIT 100 /* Limit on queue length. */
+	 #define Q_LIMIT 100 /* Limit on queue length. */
 	#define BUSY 1      /* Mnemonics for server's being busy */
 	#define IDLE 0      /* and idle. */
 
