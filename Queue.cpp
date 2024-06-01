@@ -84,14 +84,14 @@ BOOL Queue::OnInitDialog()
 	// 设置默认选中第一个单选按钮
 	((CButton*)GetDlgItem(IDC_RADIO5))->SetCheck(TRUE);
 
-	// 为了方便调试，我们在这里打开控制台
-	AllocConsole();
-	// 将标准输出重定向到控制台
-	FILE *file;
-	if (freopen_s(&file, "CONOUT$", "w", stdout) != 0)
-	{
-	// freopen_s 失败的处理逻辑
-	}
+	//// 为了方便调试，我们在这里打开控制台
+	//AllocConsole();
+	//// 将标准输出重定向到控制台
+	//FILE *file;
+	//if (freopen_s(&file, "CONOUT$", "w", stdout) != 0)
+	//{
+	//// freopen_s 失败的处理逻辑
+	//}
 	allResults.clear();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
