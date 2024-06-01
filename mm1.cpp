@@ -184,18 +184,6 @@ int mm1::arrive(void) /* Arrival event function. */
         ++num_custs_delayed;
         server_status = BUSY;
 
-		// 在顾客开始服务时计算延迟并更新最大延迟变量
-        delay = sim_time - time_arrival[1];
-        if (delay > max_delay) {
-            max_delay = delay;
-        }
-
-        // 如果顾客延迟时间超过一分钟
-		if (delay > delay_excess) {
-			++num_custs_delayed_over_1_min;
-		}
-        delay = 0.0;
-
         /* Schedule a departure (service completion). */
 
         time_next_event[2] = sim_time + expon(mean_service);
@@ -218,7 +206,6 @@ void mm1::depart(void) /* Departure event function. */
         server_status = IDLE;
         time_next_event[2] = 1.0e+30;
     }
-
     else
     {
         /* The queue is nonempty, so decrement the number of customers in
@@ -237,6 +224,11 @@ void mm1::depart(void) /* Departure event function. */
             max_delay = delay;
         }
 
+        // 如果顾客延迟时间超过一分钟
+		if (delay > delay_excess) {
+			++num_custs_delayed_over_1_min;
+		}
+
         /* Increment the number of customers delayed, and schedule departure. */
 
         ++num_custs_delayed;
@@ -253,14 +245,11 @@ void mm1::depart(void) /* Departure event function. */
 void mm1::report(void) /* Report generator function. */
 {
     /* Compute and write estimates of desired measures of performance. */
-	//results.push_back(mean_interarrival);
-	//results.push_back(mean_service);
-	//results.push_back(num_delays_required);
 
-	results.push_back(total_of_delays / num_custs_delayed);
-	results.push_back(area_num_in_q / sim_time);
-	results.push_back(area_server_status / sim_time);
-	results.push_back(sim_time);
+	results.push_back(total_of_delays / num_custs_delayed); // 计算 time average delay of customers in queue
+	results.push_back(area_num_in_q / sim_time); // 计算 average number of customers in queue
+	results.push_back(area_server_status / sim_time); // 计算 average server utilization
+	results.push_back(sim_time); // 记录模拟时间
 
     results.push_back(total_num_in_system / sim_time); // 计算系统中的平均人数
     results.push_back(total_time_in_system / num_custs_delayed); // 计算顾客在系统中的平均总时间
@@ -268,6 +257,7 @@ void mm1::report(void) /* Report generator function. */
     results.push_back(max_delay);    // 将最大延迟写入结果向量
     results.push_back(max_time_in_system); // 写入最大系统时间
 
+    // 计算延迟超过一分钟的顾客的比例
 	float proportion_delayed_over_1_min = (float)num_custs_delayed_over_1_min / num_custs_delayed;
 	results.push_back(proportion_delayed_over_1_min);
 }
