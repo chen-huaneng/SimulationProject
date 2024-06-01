@@ -245,6 +245,10 @@ void Queue::OnBnClickedButton6() // 运行模拟
 	// 获取列表控件的行数
 	rowCount = list.GetItemCount();
 
+	// 设置仿真参数
+	int max_length_queue = INFINITY;
+	bool balk_or_not = FALSE;
+
     // 判断哪一个单选按钮是选中的，根据相应的单选按钮调用相应的仿真程序
 	switch (m_nSelectRadio) {
 	case IDC_RADIO1: // Fixed Customers
@@ -270,11 +274,7 @@ void Queue::OnBnClickedButton6() // 运行模拟
 		GetDlgItemText(IDC_EDIT11, close_time_value);
 
 		// 将CString转换为float
-		float o_t = _ttof(open_time_value);
-		float c_t = _ttof(close_time_value);
-		float time_simulation_ended = (c_t - o_t) * 60;
-		int max_length_queue = INFINITY;
-		bool balk_or_not = FALSE;
+		float time_simulation_ended = (_ttof(close_time_value) - _ttof(open_time_value)) * 60;
 
 		mm1alt m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
@@ -292,8 +292,6 @@ void Queue::OnBnClickedButton6() // 运行模拟
 
 		// 将CString转换为float
 		float t_e = _ttof(time_simulation_ended);
-		int max_length_queue = INFINITY;
-		bool balk_or_not = FALSE;
 
 		mm1alt m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
@@ -314,16 +312,16 @@ void Queue::OnBnClickedButton6() // 运行模拟
 		GetDlgItemText(IDC_EDIT11, close_time_value);
 
 		// 将CString转换为float
-		float o_t = _ttof(open_time_value);
-		float c_t = _ttof(close_time_value);
-		float t_e = (c_t - o_t) * 60;
-		int max_length_int = _ttoi(max_length);
-		bool balk_or_not = TRUE;
+		float time_simulation_ended = (_ttof(close_time_value) - _ttof(open_time_value)) * 60;
+
+		// balk仿真参数
+		max_length_queue = _ttoi(max_length);
+		balk_or_not = TRUE;
 
 		mm1alt m;
 		for (int i = rowCount; i < replication_int + rowCount; i++)
 		{
-			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, t_e, delay_excess, max_length_int, balk_or_not);
+			vector<float> results = m.mm1Alt(mean_interarrival_float, mean_service_float, time_simulation_ended, delay_excess, max_length_queue, balk_or_not);
 			ShowResultsInListCtrl(list, results, i);
 		}
 		break;
