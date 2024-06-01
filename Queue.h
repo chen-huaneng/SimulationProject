@@ -29,6 +29,16 @@ private:
 	void Queue::ShowSpecialResultsInListCtrl(CListCtrl& list, vector<float> results, CString label);
 	vector<vector<float>> allResults;
 	CString seed; // 用于存储种子
+	CEdit output;
+	CButton radio1;
+	CListCtrl list;
+	CEdit openTime;
+	CEdit closeTime;
+	CEdit max_length_q;
+	CEdit length_simulation;
+	CEdit seed_by_index;
+	CEdit seed_by_number;
+	long previousSeed;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
@@ -36,9 +46,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnLvnItemchangedList1(NMHDR* pNMHDR, LRESULT* pResult);
-	CListCtrl list;
 	virtual BOOL OnInitDialog();
-	CButton radio1;
 	afx_msg void OnBnClickedButton6();
 	void ClearControls(CDialogEx* pParentDlg);
 	void InitListControls(CListCtrl& list);
@@ -47,19 +55,16 @@ public:
 	void UpdateColumnDelay(CDialogEx* pParentDlg, float delay_excess);
 	afx_msg void OnBnClickedButton5();
 	void InitValues(CDialogEx* pParentDlg);
-	CEdit output;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton3();
-	CEdit openTime;
-	CEdit closeTime;
 	afx_msg void OnBnClickedRadio2();
 	afx_msg void OnBnClickedRadio1();
 	afx_msg void OnBnClickedRadio3();
 	afx_msg void OnBnClickedRadio4();
 	afx_msg void OnBnClickedButton4();
-	CEdit max_length_q;
-	CEdit length_simulation;
 
 	afx_msg void OnEnChangeEdit11();
 	afx_msg void OnEnChangeEdit10();
+	afx_msg void OnBnClickedRadio5();
+	afx_msg void OnBnClickedRadio6();
 };
