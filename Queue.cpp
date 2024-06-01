@@ -555,7 +555,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	SetDlgItemText(IDC_EDIT12, _T("1"));
 	
 	seed = "1973272912"; // 默认种子值
-	previousSeed = 0;
+	previousSeed = 1973272912;
 
 	// 设置编辑控件为只读
 	openTime.SetReadOnly(TRUE);
