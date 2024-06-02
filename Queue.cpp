@@ -53,6 +53,7 @@ BEGIN_MESSAGE_MAP(Queue, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT10, &Queue::OnEnChangeEdit10)
 	ON_BN_CLICKED(IDC_RADIO5, &Queue::OnBnClickedRadio5)
 	ON_BN_CLICKED(IDC_RADIO6, &Queue::OnBnClickedRadio6)
+	ON_BN_CLICKED(IDC_BUTTON2, &Queue::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -599,3 +600,45 @@ void Queue::ShowSpecialResultsInListCtrl(CListCtrl& list, vector<float> results,
 }
 
 
+void Queue::WriteResultsToExcel(const std::string& filename)
+{
+    // Create a new workbook
+    lxw_workbook  *workbook  = workbook_new(filename.c_str());
+    lxw_worksheet *worksheet = workbook_add_worksheet(workbook, NULL);
+
+    // Write headers
+    std::vector<std::string> headers = {
+        "Replication", "Average delay in queue", "Average number in queue",
+        "Service utilization", "Time simulation ended", "Time-average number in system",
+        "Average total time in the system of customers", "Maximum queue length",
+        "Maximum delay in queue", "Maximum time in the system",
+        "Proportion of customers delay in queue in excess of 1 minute", "Balk of customers"
+    };
+
+    for (size_t i = 0; i < headers.size(); ++i) {
+        worksheet_write_string(worksheet, 0, i, headers[i].c_str(), NULL);
+    }
+
+    // Write data
+    for (size_t row = 0; row < allResults.size(); ++row) {
+        const std::vector<float>& results = allResults[row];
+
+        // Write replication number
+        worksheet_write_number(worksheet, row + 1, 0, row + 1, NULL);
+
+        // Write result data
+        for (size_t col = 0; col < results.size(); ++col) {
+            worksheet_write_number(worksheet, row + 1, col + 1, results[col], NULL);
+        }
+    }
+
+    // Close the workbook
+    workbook_close(workbook);
+}
+
+
+void Queue::OnBnClickedButton2()
+{
+	// 将结果写入Excel
+    WriteResultsToExcel("simulation_results.xlsx");
+}

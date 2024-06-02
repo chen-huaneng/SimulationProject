@@ -3,6 +3,7 @@
 #include "mm1.h"
 #include "mm1alt.h"
 #include <string>
+#include "xlsxwriter.h"
 
 
 // Queue 对话框
@@ -66,4 +67,6 @@ public:
 	afx_msg void OnEnChangeEdit10();
 	afx_msg void OnBnClickedRadio5();
 	afx_msg void OnBnClickedRadio6();
+	void WriteResultsToExcel(const std::string& filename);
+	afx_msg void OnBnClickedButton2();
 };
