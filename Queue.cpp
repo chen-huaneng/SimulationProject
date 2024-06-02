@@ -6,6 +6,9 @@
 #include "afxdialogex.h"
 #include "Queue.h"
 #include "lcgrand.h"
+#include <comdef.h> // For BSTR conversion
+#include <shlobj.h> // For SHGetFolderPath
+#include <atlstr.h> // For CString conversion
 
 
 // Queue 对话框
@@ -600,6 +603,49 @@ void Queue::ShowSpecialResultsInListCtrl(CListCtrl& list, vector<float> results,
 }
 
 
+//void Queue::WriteResultsToExcel(const std::string& filename)
+//{
+//    // Create a new workbook
+//    lxw_workbook  *workbook  = workbook_new(filename.c_str());
+//    lxw_worksheet *worksheet = workbook_add_worksheet(workbook, NULL);
+//
+//    // Write headers
+//    std::vector<std::string> headers = {
+//        "Replication", "Average delay in queue", "Average number in queue",
+//        "Service utilization", "Time simulation ended", "Time-average number in system",
+//        "Average total time in the system of customers", "Maximum queue length",
+//        "Maximum delay in queue", "Maximum time in the system",
+//        "Proportion of customers delay in queue in excess of 1 minute", "Balk of customers"
+//    };
+//
+//    for (size_t i = 0; i < headers.size(); ++i) {
+//        worksheet_write_string(worksheet, 0, i, headers[i].c_str(), NULL);
+//    }
+//
+//    // Write data
+//    for (size_t row = 0; row < allResults.size(); ++row) {
+//        const std::vector<float>& results = allResults[row];
+//
+//        // Write replication number
+//        worksheet_write_number(worksheet, row + 1, 0, row + 1, NULL);
+//
+//        // Write result data
+//        for (size_t col = 0; col < results.size(); ++col) {
+//            worksheet_write_number(worksheet, row + 1, col + 1, results[col], NULL);
+//        }
+//    }
+//
+//    // Close the workbook
+//    workbook_close(workbook);
+//}
+//
+//
+//void Queue::OnBnClickedButton2()
+//{
+//	// 将结果写入Excel
+//    WriteResultsToExcel("simulation_results.xlsx");
+//}
+
 void Queue::WriteResultsToExcel(const std::string& filename)
 {
     // Create a new workbook
@@ -639,6 +685,14 @@ void Queue::WriteResultsToExcel(const std::string& filename)
 
 void Queue::OnBnClickedButton2()
 {
-	// 将结果写入Excel
-    WriteResultsToExcel("simulation_results.xlsx");
+    // 打开文件保存对话框
+    CFileDialog fileDlg(FALSE, _T("xlsx"), _T("simulation_results.xlsx"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("Excel Files (*.xlsx)|*.xlsx||"));
+    if (fileDlg.DoModal() == IDOK) {
+        CString filePath = fileDlg.GetPathName();
+        CT2CA pszConvertedAnsiString(filePath);
+        std::string strStd(pszConvertedAnsiString);
+
+        // 将结果写入Excel
+        WriteResultsToExcel(strStd);
+    }
 }
