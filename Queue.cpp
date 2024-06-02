@@ -546,7 +546,7 @@ void Queue::InitValues(CDialogEx* pParentDlg) {
 	SetDlgItemText(IDC_EDIT3, _T("1000"));
 	SetDlgItemText(IDC_EDIT4, _T("480"));
 	SetDlgItemText(IDC_EDIT5, _T("1"));
-	SetDlgItemText(IDC_EDIT6, _T("5"));
+	SetDlgItemText(IDC_EDIT6, _T("10"));
 	SetDlgItemText(IDC_EDIT7, _T("1973272912"));
 	SetDlgItemText(IDC_EDIT9, _T("2"));
 	SetDlgItemText(IDC_EDIT10, _T("9"));
